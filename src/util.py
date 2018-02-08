@@ -1,13 +1,19 @@
 '''Utils related to rhyming'''
 import IOUtil
 
+VOWEL = 'vowel'
+STRESSED_FLAGS = {'1', '2'}
+
 phone_type_dict, type_phone_dict = IOUtil.load_phone_type_dicts()
 word_phone_dict = IOUtil.load_word_phone_dict()
 
 
 def is_vowel(phone):
-    '''Given a phone, determine if it is a vowel'''
-    return phone_type_dict[phone] == 'vowel'
+    '''
+    Given a phone, determine if it is a vowel
+    Returns a boolean
+    '''
+    return phone_type_dict[phone] == VOWEL
 
 
 def extract_syllables(phones):
@@ -17,6 +23,7 @@ def extract_syllables(phones):
     Returns a list of lists of string phones'''
     syllables = []
     syllable = []
+    # keep track of whether or not we have seen an initial vowel
     seen_vowel = False
     for phone in phones:
         if is_vowel(phone):
@@ -29,14 +36,12 @@ def extract_syllables(phones):
     return syllables
 
 
-def get_last_stressed(word):
+def get_last_stressed(phones):
     '''
-    Gets the last stressed syllable of a word, and any unstressed syllables
-    following it.
+    Gets the last stressed syllable of a list of phones, and any unstressed
+    syllables following it.
     Returns a list of lists of string phones.
     '''
-    word = word.upper()
-    phones = word_phone_dict[word]
     syllables = extract_syllables(phones)
     if len(syllables) == 1:
         return syllables
@@ -52,8 +57,22 @@ def is_stressed(syllable):
     Returns a boolean
     '''
     # first syllable may have a leading consonant
-    if is_vowel(phone_type_dict[syllable[0]]):
+    if is_vowel(syllable[0]):
         vowel = syllable[0]
     else:
         vowel = syllable[1]
-    return vowel[-1] == '1' or vowel[-1] == '2'
+    return vowel[-1] in STRESSED_FLAGS
+
+
+def is_consonant(phone):
+    '''
+    Determine if a phone is a consonant
+    Returns a boolean
+    '''
+    return phone_type_dict[phone] != VOWEL
+
+
+def flatten(x):
+    '''Generator of values from a 2d collection'''
+    for y in x:
+        yield from y
