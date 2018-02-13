@@ -3,7 +3,6 @@ import IOUtil
 from util import flatten
 from collections import defaultdict
 
-VOWEL = 'vowel'
 STRESSED_FLAGS = {'1', '2'}
 VOICED_CONSONANTS = {'B', 'D', 'G', 'V', 'DH', 'Z', 'ZH', 'JH', 'M', 'N', 'NG',
                      'L', 'R'}
@@ -24,7 +23,7 @@ def is_vowel(phone):
     Given a phone, determine if it is a vowel
     Returns a boolean
     '''
-    return phone_type_dict[phone] == VOWEL
+    return phone_type_dict[phone] == IOUtil.VOWEL
 
 
 def extract_syllables(phones):
@@ -82,13 +81,13 @@ def is_consonant(phone):
     Determine if a phone is a consonant
     Returns a boolean
     '''
-    return phone_type_dict[phone] != VOWEL
+    return phone_type_dict[phone] != IOUtil.VOWEL
 
 
 def get_consonant_family(consonant):
     '''Given a consonant, get its family (type, voiced) members'''
     family = phone_type_dict[consonant]
-    return type_voiced_phone_dict[consonant][is_voiced(consonant)]
+    return type_voiced_phone_dict[family][is_voiced(consonant)]
 
 
 def get_consonant_partners(consonant):
@@ -97,7 +96,7 @@ def get_consonant_partners(consonant):
     return type_phone_dict[family]
 
 
-def get_phones(word, num_sylls=1):
+def get_last_syllable(word, num_sylls=1):
     word = word.upper()
     phones = word_phone_dict[word]
     # TODO: support multi-syllable-rhymes
@@ -105,6 +104,10 @@ def get_phones(word, num_sylls=1):
     if is_consonant(phones[0]):
         phones = phones[1:]
     return phones
+
+
+def get_phones(word):
+    return word_phone_dict[word.upper()]
 
 # TODO: move this to IOUtil? But depends on is_voiced fn
 for type_, phones in type_phone_dict.items():

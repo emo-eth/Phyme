@@ -7,6 +7,7 @@ file_path = os.path.dirname(__file__)
 
 AFFRICATE = 'affricate'
 FRICATIVE = 'fricative'
+VOWEL = 'vowel'
 
 # use global objects so we don't load data each time we call a method
 rt = None
@@ -56,9 +57,11 @@ def load_phone_type_dicts():
             if family == AFFRICATE:
                 family = FRICATIVE
             phone_type_dict[phone] = family
-            if family == 'vowel':
+            if family == VOWEL:
                 # quick lookup for stressed syllables: AY0, AY1, AY2
                 for x in range(3):
-                    phone_type_dict[phone + str(x)] = 'vowel'
+                    stressed_phone = phone + str(x)
+                    phone_type_dict[stressed_phone] = family
+                    type_phone_dict[family].add(stressed_phone)
             type_phone_dict[family].add(phone)
     return phone_type_dict, type_phone_dict
