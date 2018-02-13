@@ -46,10 +46,12 @@ def extract_syllables(phones):
     return syllables
 
 
-def get_last_stressed(phones):
+def get_last_stressed(phones, num_sylls=1):
     '''
     Gets the last stressed syllable of a list of phones, and any unstressed
     syllables following it.
+    TODO: import getting a certain number of syllables
+    TODO: distinct from getting x num of syllables?
     Returns a list of lists of string phones.
     '''
     syllables = extract_syllables(phones)
@@ -92,6 +94,16 @@ def get_consonant_partners(consonant):
     '''Given a consonant, get its type members'''
     family = phone_type_dict[consonant]
     return type_phone_dict[family]
+
+
+def get_phones(word, num_sylls=1):
+    word = word.upper()
+    phones = word_phone_dict[word]
+    # TODO: support multi-syllable-rhymes
+    phones = list(flatten(get_last_stressed(phones, num_sylls)))
+    if is_consonant(phones[0]):
+        phones = phones[1:]
+    return phones
 
 # TODO: move this to IOUtil? But depends on is_voiced fn
 for type_, phones in type_phone_dict.items():
