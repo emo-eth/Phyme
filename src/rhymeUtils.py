@@ -1,5 +1,6 @@
 '''Utils related to rhyming'''
 import IOUtil
+from util import flatten
 from collections import defaultdict
 
 VOWEL = 'vowel'
