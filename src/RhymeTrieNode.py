@@ -1,6 +1,6 @@
 class RhymeTrieNode(object):
     
-    def __init__(self, phone, parent, word=False):
+    def __init__(self, phone, parent):
         self.children = {}
         self.parent = parent
         self.phone = phone
