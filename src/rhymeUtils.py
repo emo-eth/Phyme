@@ -11,14 +11,6 @@ phone_type_dict, type_phone_dict = IOUtil.load_phone_type_dicts()
 word_phone_dict = IOUtil.load_word_phone_dict()
 type_voiced_phone_dict = defaultdict(lambda: defaultdict(set))
 
-# TODO: move this to IOUtil? But depends on is_voiced fn
-for type_, phones in type_phone_dict.items():
-    for phone in phones:
-        if is_voiced(phone):
-            type_voiced_phone_dict[type_][True].add(phone)
-        else:
-            type_voiced_phone_dict[type_][False].add(phone)
-
 
 def is_voiced(phone):
     '''Given a phone, determine if it is voiced
@@ -100,3 +92,11 @@ def get_consonant_partners(consonant):
     '''Given a consonant, get its type members'''
     family = phone_type_dict[consonant]
     return type_phone_dict[family]
+
+# TODO: move this to IOUtil? But depends on is_voiced fn
+for type_, phones in type_phone_dict.items():
+    for phone in phones:
+        if is_voiced(phone):
+            type_voiced_phone_dict[type_][True].add(phone)
+        else:
+            type_voiced_phone_dict[type_][False].add(phone)
