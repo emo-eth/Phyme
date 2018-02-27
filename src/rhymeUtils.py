@@ -58,7 +58,7 @@ def get_last_stressed(phones, num_sylls=1):
     if len(syllables) == 1:
         return syllables
     if is_stressed(syllables[-1]):
-        return [syllables[-1]]
+        return syllables[-1:]
     else:
         return syllables[-2:]
 

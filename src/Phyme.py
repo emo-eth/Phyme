@@ -13,9 +13,9 @@ class Phyme(object):
         Returns a set of strings'''
         return set(self.rhyme_trie.search(phones).get_sub_words())
 
-    def get_perfect_rhymes(self, word):
+    def get_perfect_rhymes(self, word, num_syllables=1):
         '''Get perfect rhymes of a word, based on its last stressed vowel'''
-        phones = ru.get_phones(word)
+        phones = ru.get_last_syllable(word, num_syllables)
         results = self.search(phones)
         if results:
             results.remove(word.upper())
