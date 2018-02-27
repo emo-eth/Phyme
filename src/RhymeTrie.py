@@ -3,10 +3,10 @@ from RhymeTrieNode import RhymeTrieNode
 
 class RhymeTrie(object):
     '''A RhymeTrie holds RhymeTrie nodes and accesses them.'''
-    
+
     def __init__(self):
         self.children = {}
-    
+
     def insert(self, phones, word):
         '''Given a word and its phones, insert them into the trie. Associate the word with the end node.
         Returns a RhymeTrieNode'''
@@ -24,7 +24,7 @@ class RhymeTrie(object):
         else:
             child_node.words.add(word)
             return child_node
-        
+
     def contains(self, phones):
         '''Given a list of phones, finds the end node in the trie associated with those phones.
         Returns a RhymeTrieNode'''
@@ -34,7 +34,7 @@ class RhymeTrie(object):
         if child_node:
             return child_node.contains(remaining_phones)
         return False
-        
+
     def search(self, phones):
         '''Given a list of phones, find a node in the trie associated with those phones.
         Returns a RhymeTrieNode or None if there is no node associated with the given phones'''
@@ -45,11 +45,11 @@ class RhymeTrie(object):
         if child_node:
             return child_node.search(remaining_phones)
         return None
-        
+
     def count_nodes(self):
         '''Counts the number of children nodes in the trie'''
-        return sum(child.count_nodes() for _, child in self.children.items())
-    
+        return sum(child.count_nodes() for child in self.children.values())
+
     def count_words(self):
         '''Counts the number of words in the trie'''
-        return sum(child.count_words() for _, child in self.children.items())
+        return sum(child.count_words() for child in self.children.values())
