@@ -109,6 +109,7 @@ def get_last_syllable(word, num_sylls=1):
 def get_phones(word):
     return word_phone_dict[word.upper()]
 
+
 # TODO: move this to IOUtil? But depends on is_voiced fn
 for type_, phones in type_phone_dict.items():
     for phone in phones:
