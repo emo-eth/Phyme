@@ -12,7 +12,7 @@ class PhymeTest(unittest.TestCase):
         self.assertTrue('OPAL' in self.rd.get_perfect_rhymes('constantinople'))
 
     def test_family_rhyme(self):
-        self.assertTrue('COB' in self.rd.get_family_rhymes('dog'))
+        self.assertTrue('FOB' in self.rd.get_family_rhymes('dog'))
 
     def test_partner_rhyme(self):
         self.assertTrue('DOCK' in self.rd.get_partner_rhymes('dog'))

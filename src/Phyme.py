@@ -20,3 +20,15 @@ class Phyme(object):
         if results:
             results.remove(word.upper())
         return results
+    
+    def get_family_rhymes(self, word, num_syllables=1):
+        phones = ru.get_last_syllable(word, num_syllables)
+        if not ru.is_consonant(phones[-1]):
+            return set()
+        consonant = phones[-1]
+        family = ru.get_consonant_family(consonant)
+        family.remove(consonant)
+        results = set()
+        for consonant in family:
+            results.update(self.search(phones[:-1] + [consonant]))
+        return results
