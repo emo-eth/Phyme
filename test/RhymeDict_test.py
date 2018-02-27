@@ -26,7 +26,7 @@ class RhymeUtilsTest(unittest.TestCase):
         self.assertTrue('BEG' in self.rd.get_consonant_rhyme('DOG'))
 
     def get_multisyllable_rhyme(self):
-        self.assertTrue('zoology' in self.rd.get_perfect_rhymes('topology', num_syllables=2))
+        self.assertTrue('ZOOLOGY' in self.rd.get_perfect_rhymes('topology', num_syllables=2))
 
 if __name__ == '__main__':
     unittest.main()
