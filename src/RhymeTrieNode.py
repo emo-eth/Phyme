@@ -12,7 +12,7 @@ class RhymeTrieNode(object):
             return self
         child_node = self.children.get(phones[0])
         if child_node is None:
-            child_node = RhymeTrieNode(phones[0], self, len(phones) == 1)
+            child_node = RhymeTrieNode(phones[0], self)
             self.children[phones[0]] = child_node
         remaining_phones = phones[1:]
         return child_node.insert(remaining_phones)
