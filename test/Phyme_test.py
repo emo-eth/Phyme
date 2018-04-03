@@ -19,13 +19,13 @@ class PhymeTest(unittest.TestCase):
         self.assertTrue('HAWK' in self.rd.get_partner_rhymes('dog'))
 
     def test_additive_rhyme(self):
-        self.assertTrue('DUDE' in self.rd.get_additive_rhyme('do'))
+        self.assertTrue('DUDE' in self.rd.get_additive_rhymes('do'))
 
     def test_subtractive_rhyme(self):
         self.assertTrue('DO' in self.rd.get_subtractive_rhymes('dude'))
 
     def test_consonant_rhyme(self):
-        self.assertTrue('BEG' in self.rd.get_consonant_rhyme('dog'))
+        self.assertTrue('BEG' in self.rd.get_consonant_rhymes('dog'))
 
     def test_assonance_rhyme(self):
         self.assertTrue('DON' in self.rd.get_assonance_rhymes('dog'))
