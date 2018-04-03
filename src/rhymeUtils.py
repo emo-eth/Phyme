@@ -100,6 +100,7 @@ def get_consonant_partners(consonant):
 
 
 def get_last_syllables(word, num_sylls=None):
+    # TODO: care about stresses?
     word = word.upper()
     phones = word_phone_dict[word]
     syllables = extract_syllables(phones)
