@@ -13,9 +13,10 @@ class PhymeTest(unittest.TestCase):
 
     def test_family_rhyme(self):
         self.assertTrue('FOB' in self.rd.get_family_rhymes('dog'))
+        self.assertTrue('VOCAL' in self.rd.get_family_rhymes('constantinople'))
 
     def test_partner_rhyme(self):
-        self.assertTrue('DOCK' in self.rd.get_partner_rhymes('dog'))
+        self.assertTrue('HAWK' in self.rd.get_partner_rhymes('dog'))
 
     def test_additive_rhyme(self):
         self.assertTrue('DUDE' in self.rd.get_additive_rhyme('do'))
@@ -31,7 +32,7 @@ class PhymeTest(unittest.TestCase):
 
     def test_multisyllable_rhyme(self):
         self.assertTrue('ZOOLOGY' in self.rd.get_perfect_rhymes(
-            'topology', num_syllables=2))
+            'toxicology', num_syllables=3))
 
 
 if __name__ == '__main__':
