@@ -71,10 +71,40 @@ class Phyme(object):
             results.update(result)
         return results
 
-    def get_consonant_rhymes(self, word):
-        phones = ru.get_last_syllables(word)
+    def get_consonant_rhymes(self, word, num_syllables=None):
+        phones = ru.get_last_syllables(word, num_syllables)
         results = set()
+        permutations = self._recursive_permute_vowels(phones)
+        for result in self._search_permutations(permutations):
+            results.update(result)
         return results
+
+    def get_assonance_rhymes(self, word, num_syllables=None):
+        phones = ru.get_last_syllables(word, num_syllables)
+        phones = list(map(lambda syll: [phone for phone in syll if
+                                        ru.is_vowel(phone)], phones))
+        results = set()
+        permutations = self._recursive_permute_words(phones, add_sub='ADD')
+        for result in self._search_permutations(permutations):
+            results.update(result)
+        return results
+
+    def _permute_vowels(self, syll):
+        '''Get all permutations on the vowel of a syllable'''
+        for vowel in ru.VOWELS:
+            yield [vowel] + syll[1:]
+
+    def _recursive_permute_vowels(self, sylls):
+        '''Get all (existing) permutations of a set of syllables on vowels'''
+        if len(sylls) == 1:
+            yield from ([syll] for syll in self._permute_vowels(sylls[0]))
+        else:
+            permutations = self._permute_vowels(sylls[0])
+            for syll in permutations:
+                yield from ([syll] + rest for rest in
+                            self._recursive_permute_vowels(self, sylls)
+                            if self.rhyme_trie.contains(
+                                list(util.flatten(rest))))
 
     def _recursive_permute_additive(self, syll):
         if not self.rhyme_trie.contains(syll):
