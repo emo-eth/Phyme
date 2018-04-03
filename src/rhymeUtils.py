@@ -12,18 +12,30 @@ word_phone_dict = IOUtil.load_word_phone_dict()
 type_voiced_phone_dict = defaultdict(lambda: defaultdict(set))
 
 
-def is_voiced(phone):
-    '''Given a phone, determine if it is voiced
-    Returns a boolean'''
-    return phone in VOICED_CONSONANTS or is_vowel(phone)
-
-
 def is_vowel(phone):
     '''
     Given a phone, determine if it is a vowel
     Returns a boolean
     '''
     return phone_type_dict[phone] == IOUtil.VOWEL
+
+
+def is_consonant(phone):
+    '''
+    Determine if a phone is a consonant
+    Returns a boolean
+    '''
+    return not is_vowel(phone)
+
+
+CONSONANTS = {x for x in phone_type_dict if is_consonant(x)}
+VOWELS = {x for x in phone_type_dict if is_vowel(x)}
+
+
+def is_voiced(phone):
+    '''Given a phone, determine if it is voiced
+    Returns a boolean'''
+    return phone in VOICED_CONSONANTS or is_vowel(phone)
 
 
 def extract_syllables(phones):
@@ -73,14 +85,6 @@ def is_stressed(syllable):
     else:
         vowel = syllable[1]
     return vowel[-1] in STRESSED_FLAGS
-
-
-def is_consonant(phone):
-    '''
-    Determine if a phone is a consonant
-    Returns a boolean
-    '''
-    return phone_type_dict[phone] != IOUtil.VOWEL
 
 
 def get_consonant_family(consonant):

@@ -35,11 +35,9 @@ class Phyme(object):
         if not ru.is_consonant(phones[0][-1]):
             return set()
         results = set()
-        for permutation in self._recursive_permute_words(phones, family=True):
-            permutation = list(util.flatten(permutation))
-            result = self.search(permutation)
-            if result:
-                results.update(result)
+        permutations = self._recursive_permute_words(phones, family=True)
+        for result in self._search_permutations(permutations):
+            results.update(result)
         return results
 
     def get_partner_rhymes(self, word, num_syllables=None):
@@ -47,21 +45,70 @@ class Phyme(object):
         if not ru.is_consonant(phones[0][-1]):
             return set()
         results = set()
-        for permutation in self._recursive_permute_words(phones, family=False):
-            permutation = list(util.flatten(permutation))
-            result = self.search(permutation)
-            if result:
-                results.update(result)
+        permutations = self._recursive_permute_words(phones, family=False)
+        for result in self._search_permutations(permutations):
+            results.update(result)
         return results
 
-    def _recursive_permute_words(self, sylls, family=True):
-        if len(sylls) == 1:
-            yield from ([syll] for syll in
-                        self._recursive_permute_syllable(sylls[0], family))
+    def get_additive_rhymes(self, word, num_syllables=None):
+        """Get additive rhymes of a word, eg DO -> DUDE
+
+        Arguments:
+            word {str} -- the word you want additive rhymes for
+        """
+        phones = ru.get_last_syllables(word, num_syllables)
+        results = set()
+        permutations = self._recursive_permute_words(phones, add_sub='ADD')
+        for result in self._search_permutations(permutations):
+            results.update(result)
+        return results
+
+    def get_subtractive_rhymes(self, word, num_syllables=None):
+        phones = ru.get_last_syllables(word, num_syllables)
+        results = set()
+        permutations = self._recursive_permute_words(phones, add_sub='SUB')
+        for result in self._search_permutations(permutations):
+            results.update(result)
+        return results
+
+    def get_consonant_rhymes(self, word):
+        phones = ru.get_last_syllables(word)
+        results = set()
+        return results
+
+    def _recursive_permute_additive(self, syll):
+        if not self.rhyme_trie.contains(syll):
+            return None
         else:
+            yield syll
+            for consonant in ru.CONSONANTS:
+                result = self._recursive_permute_additive(syll + [consonant])
+                if result:
+                    yield from result
+
+    def _recursive_permute_subtractive(self, syll):
+        yield syll
+        if ru.is_consonant(syll[-1]):
+            yield syll
+            yield from self._recursive_permute_subtractive(syll[:-1])
+
+    def _recursive_permute_words(self, sylls, family=True, add_sub=None):
+        if len(sylls) == 1:
+            if add_sub is None:
+                permutations = self._recursive_permute_syllable(sylls[0],
+                                                                family)
+            elif add_sub == 'ADD':
+                permutations = self._recursive_permute_additive(sylls[0])
+            elif add_sub == 'SUB':
+                permutations = self._recursive_permute_subtractive(sylls[0])
+            yield from ([syll] for syll in permutations)
+        else:
+
             for syll in self._recursive_permute_syllable(sylls[0], family):
                 yield from ([syll] + rest for rest in
-                            self._recursive_permute_words(sylls[1:], family))
+                            self._recursive_permute_words(sylls[1:], family)
+                            if self.rhyme_trie.contains(
+                                list(util.flatten(rest))))
 
     def _recursive_permute_syllable(self, phones, family=True):
         if len(phones) == 1:
@@ -84,3 +131,10 @@ class Phyme(object):
         else:
             companions = ru.get_consonant_partners(consonant)
         yield from companions
+
+    def _search_permutations(self, permutations):
+        for permutation in permutations:
+            permutation = list(util.flatten(permutation))
+            result = self.search(permutation)
+            if result:
+                yield result
