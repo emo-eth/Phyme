@@ -30,10 +30,10 @@ class RhymeUtilsTest(unittest.TestCase):
     def test_get_last_stressed(self):
         # test get_last_stressed gets the last stressed syllable and following unstressed
         anti = ru.get_phones('antidisestablishmentarianism')
-        stressed = ru.get_last_stressed(anti, num_sylls=1)
+        stressed = ru.get_last_stressed(ru.extract_syllables(anti))
         self.assertEqual(len(stressed), 2)
         begin = ru.get_phones('begin')
-        stressed = ru.get_last_stressed(begin, num_sylls=1)
+        stressed = ru.get_last_stressed(ru.extract_syllables(begin))
         self.assertEqual(len(stressed), 1)
 
     def test_is_vowel(self):

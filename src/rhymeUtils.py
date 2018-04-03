@@ -46,7 +46,7 @@ def extract_syllables(phones):
     return syllables
 
 
-def get_last_stressed(phones, num_sylls=1):
+def get_last_stressed(syllables):
     '''
     Gets the last stressed syllable of a list of phones, and any unstressed
     syllables following it.
@@ -54,7 +54,6 @@ def get_last_stressed(phones, num_sylls=1):
     TODO: distinct from getting x num of syllables?
     Returns a list of lists of string phones.
     '''
-    syllables = extract_syllables(phones)
     if len(syllables) == 1:
         return syllables
     if is_stressed(syllables[-1]):
@@ -96,14 +95,18 @@ def get_consonant_partners(consonant):
     return type_phone_dict[family]
 
 
-def get_last_syllable(word, num_sylls=1):
+def get_last_syllables(word, num_sylls=None):
     word = word.upper()
     phones = word_phone_dict[word]
-    # TODO: support multi-syllable-rhymes
-    phones = list(flatten(get_last_stressed(phones, num_sylls)))
-    if is_consonant(phones[0]):
-        phones = phones[1:]
-    return phones
+    syllables = extract_syllables(phones)
+    if num_sylls is None:
+        syllables = get_last_stressed(syllables)
+    else:
+        syllables = syllables[-num_sylls:]
+    # print(syllables)
+    if is_consonant(syllables[0][0]):
+        syllables[0] = syllables[0][1:]
+    return syllables
 
 
 def get_phones(word):

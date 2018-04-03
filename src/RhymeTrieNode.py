@@ -56,5 +56,5 @@ class RhymeTrieNode(object):
 
     def get_sub_words(self):
         yield from self.words
-        for _, child in self.children.items():
+        for child in self.children.values():
             yield from child.get_sub_words()
