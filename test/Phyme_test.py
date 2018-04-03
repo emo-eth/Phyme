@@ -28,7 +28,7 @@ class PhymeTest(unittest.TestCase):
         self.assertTrue('BEG' in self.rd.get_consonant_rhymes('dog'))
 
     def test_assonance_rhyme(self):
-        self.assertTrue('DON' in self.rd.get_assonance_rhymes('dog'))
+        self.assertTrue('JAUNT' in self.rd.get_assonance_rhymes('dog'))
 
     def test_multisyllable_rhyme(self):
         self.assertTrue('ZOOLOGY' in self.rd.get_perfect_rhymes(
