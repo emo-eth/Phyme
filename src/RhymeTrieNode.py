@@ -1,3 +1,11 @@
+FAMILY = 'FAMILY'  # isVoiced + type
+PARTNER = 'PARTNER'  # !isVoiced + type
+ADDITIVE = 'ADDITIVE'  # extra consonants
+SUB = 'SUBTRACTIVE'  # fewer consonants
+CONSONANT = 'CONSONANT'  # different vowel, same consonants
+ASSONANCE = 'ASSONANCE'  # same vowel, any consonants
+
+
 class RhymeTrieNode(object):
 
     def __init__(self, phone, parent):
