@@ -108,7 +108,6 @@ def get_last_syllables(word, num_sylls=None):
         syllables = get_last_stressed(syllables)
     else:
         syllables = syllables[-num_sylls:]
-    # print(syllables)
     if is_consonant(syllables[0][0]):
         syllables[0] = syllables[0][1:]
     return syllables

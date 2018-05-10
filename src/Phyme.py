@@ -111,7 +111,7 @@ class Phyme(object):
         return results
 
     def get_subtractive_rhymes(self, word, num_syllables=None):
-        """Get subtractive rhymes of a word, eg DUDE -> DO  
+        """Get subtractive rhymes of a word, eg DUDE -> DO
 
         Arguments:
             word {str} -- word to rhyme
