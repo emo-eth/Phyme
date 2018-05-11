@@ -2,10 +2,31 @@
 import IOUtil
 from util import flatten
 from collections import defaultdict
+from enum import Enum, auto
 
 STRESSED_FLAGS = {'1', '2'}
 VOICED_CONSONANTS = {'B', 'D', 'G', 'V', 'DH', 'Z', 'ZH', 'JH', 'M', 'N', 'NG',
                      'L', 'R'}
+
+
+class PermutedPhone(object):
+
+    def __init__(self, phone, permutation=None):
+        self.phone = phone
+        self.permutation = permutation
+
+    def __repr__(self):
+        return self.phone + ' ' + self.permutation.name
+
+
+class Permutations(Enum):
+    ADDITIVE = auto()
+    SUBTRACTIVE = auto()
+    PARTNER = auto()
+    FAMILY = auto()
+    ASSONANCE = auto()
+    CONSONANT = auto()
+
 
 phone_type_dict, type_phone_dict = IOUtil.load_phone_type_dicts()
 word_phone_dict = IOUtil.load_word_phone_dict()
@@ -17,7 +38,9 @@ def is_vowel(phone):
     Given a phone, determine if it is a vowel
     Returns a boolean
     '''
-    return phone_type_dict[phone] == IOUtil.VOWEL
+    if isinstance(phone, PermutedPhone):
+        phone = phone.phone
+    return phone_type_dict.get(phone) == IOUtil.VOWEL
 
 
 def is_consonant(phone):
@@ -124,3 +147,12 @@ for type_, phones in type_phone_dict.items():
             type_voiced_phone_dict[type_][True].add(phone)
         else:
             type_voiced_phone_dict[type_][False].add(phone)
+
+permutation_getters = {
+    Permutations.ADDITIVE: lambda x: [x],
+    Permutations.SUBTRACTIVE: lambda x: [x],
+    Permutations.PARTNER: get_consonant_partners,
+    Permutations.FAMILY: get_consonant_family,
+    Permutations.ASSONANCE: lambda x: [x],
+    Permutations.CONSONANT: lambda _: VOWELS
+}

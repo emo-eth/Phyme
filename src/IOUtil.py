@@ -1,6 +1,5 @@
 '''Utils for loading and parsing pronunciation data into data structures'''
 from collections import defaultdict
-from RhymeTrie import RhymeTrie
 import os
 
 file_path = os.path.dirname(__file__)
@@ -10,22 +9,9 @@ FRICATIVE = 'fricative'
 VOWEL = 'vowel'
 
 # use global objects so we don't load data each time we call a method
-rt = None
 word_phone_dict = {}
 phone_type_dict = {}
 type_phone_dict = defaultdict(set)
-
-
-def load_rhyme_trie():
-    '''Load a fully-loaded RhymeTrie object'''
-    global rt
-    word_phone_dict = load_word_phone_dict()
-    if rt:
-        return rt
-    rt = RhymeTrie()
-    for word, phones in word_phone_dict.items():
-        rt.insert(phones, word)
-    return rt
 
 
 def load_word_phone_dict():
