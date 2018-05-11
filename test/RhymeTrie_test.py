@@ -1,9 +1,8 @@
 import unittest
 import sys
 sys.path.append('../src')
-from RhymeTrie import RhymeTrie
+from RhymeTrie import RhymeTrie, load_rhyme_trie
 from RhymeTrieNode import RhymeTrieNode
-from IOUtil import load_rhyme_trie
 from rhymeUtils import word_phone_dict
 
 
