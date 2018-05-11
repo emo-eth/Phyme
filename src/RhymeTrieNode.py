@@ -1,3 +1,7 @@
+import rhymeUtils as ru
+from rhymeUtils import PermutedPhone, Permutations, permutation_getters
+
+
 class RhymeTrieNode(object):
 
     def __init__(self, phone, parent):
@@ -38,13 +42,24 @@ class RhymeTrieNode(object):
             return child_node.search(phones[1:])
         return None
 
+    def search_permutations(self, phones):
+        '''Returns a generator of nodes'''
+        if not phones:
+            yield self
+            return
+        yield from self._add_subtract_phones(phones)
+        permuted_phones = self._get_permuted_phones(phones[0])
+        remaining_phones = phones[1:]
+        for phone in permuted_phones:
+            child = self.children.get(phone)
+            if child:
+                yield from child.search_permutations(remaining_phones)
+
     def assemble(self):
         '''Aggregate all phones up the trie from this node, inclusive. Returns a generator'''
+        yield self.phone
         if isinstance(self.parent, RhymeTrieNode):
-            yield self.phone
             yield from self.parent.assemble()
-        else:
-            yield self.phone
 
     def count_nodes(self):
         '''Counts the number of children nodes in the trie'''
@@ -58,3 +73,23 @@ class RhymeTrieNode(object):
         yield from self.words
         for child in self.children.values():
             yield from child.get_sub_words()
+
+    def _get_permuted_phones(self, phone):
+        if isinstance(phone, PermutedPhone):
+            getter = permutation_getters.get(phone.permutation)
+            yield from getter(phone.phone)
+        else:
+            yield phone
+
+    def _add_subtract_phones(self, phones):
+        if isinstance(phones[0], PermutedPhone):
+            phone = phones[0]
+            # try all permutations without this phone
+            if phone.permutation == Permutations.SUBTRACTIVE:
+                yield from self.search_permutations(phones[1:])
+            elif phone.permutation == Permutations.ADDITIVE:
+                for consonant in ru.CONSONANTS:
+                    # try all permutations with this added consonant
+                    child = self.children.get(consonant)
+                    if child:
+                        yield from child.search_permutations(phones)
