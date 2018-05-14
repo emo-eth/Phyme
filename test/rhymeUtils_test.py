@@ -55,5 +55,6 @@ class RhymeUtilsTest(unittest.TestCase):
     def get_consonant_partners(self):
         self.assertTrue('CH' in ru.get_consonant_partners('JH'))
 
+
 if __name__ == '__main__':
     unittest.main()

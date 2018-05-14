@@ -6,7 +6,7 @@ from enum import Enum, auto
 
 STRESSED_FLAGS = frozenset(('1', '2'))
 VOICED_CONSONANTS = frozenset(('B', 'D', 'G', 'V', 'DH', 'Z', 'ZH', 'JH', 'M',
-                              'N', 'NG', 'L', 'R'))
+                               'N', 'NG', 'L', 'R'))
 
 
 class PermutedPhone(object):

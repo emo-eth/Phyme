@@ -108,7 +108,7 @@ class Phyme(object):
         phones = map(lambda phone: PermutedPhone(phone, Permutations.ADDITIVE),
                      filter(lambda phone: ru.is_vowel(phone), phones))
         return self.search_permutations(phones)
-    
+
     def get_substitution_rhymes(self, word, num_syllables=None):
         phones = ru.get_last_syllables(word, num_syllables)
         phones = util.flatten(phones)
