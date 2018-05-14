@@ -105,6 +105,15 @@ class Phyme(object):
     def get_assonance_rhymes(self, word, num_syllables=None):
         phones = ru.get_last_syllables(word, num_syllables)
         phones = util.flatten(phones)
-        phones = map(lambda x: PermutedPhone(x, Permutations.ADDITIVE),
-                     filter(lambda x: ru.is_vowel(x), phones))
+        phones = map(lambda phone: PermutedPhone(phone, Permutations.ADDITIVE),
+                     filter(lambda phone: ru.is_vowel(phone), phones))
+        return self.search_permutations(phones)
+    
+    def get_substitution_rhymes(self, word, num_syllables=None):
+        phones = ru.get_last_syllables(word, num_syllables)
+        phones = util.flatten(phones)
+        phones = map(lambda phone: PermutedPhone(phone, Permutations.SUBSTITUTION)
+                     if ru.is_consonant(phone)
+                     else phone,
+                     phones)
         return self.search_permutations(phones)

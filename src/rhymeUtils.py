@@ -4,9 +4,9 @@ from util import flatten
 from collections import defaultdict
 from enum import Enum, auto
 
-STRESSED_FLAGS = {'1', '2'}
-VOICED_CONSONANTS = {'B', 'D', 'G', 'V', 'DH', 'Z', 'ZH', 'JH', 'M', 'N', 'NG',
-                     'L', 'R'}
+STRESSED_FLAGS = frozenset(('1', '2'))
+VOICED_CONSONANTS = frozenset(('B', 'D', 'G', 'V', 'DH', 'Z', 'ZH', 'JH', 'M',
+                              'N', 'NG', 'L', 'R'))
 
 
 class PermutedPhone(object):
@@ -26,6 +26,7 @@ class Permutations(Enum):
     FAMILY = auto()
     ASSONANCE = auto()
     CONSONANT = auto()
+    SUBSTITUTION = auto()
 
 
 phone_type_dict, type_phone_dict = IOUtil.load_phone_type_dicts()
@@ -154,5 +155,6 @@ permutation_getters = {
     Permutations.PARTNER: get_consonant_partners,
     Permutations.FAMILY: get_consonant_family,
     Permutations.ASSONANCE: lambda x: [x],
-    Permutations.CONSONANT: lambda _: VOWELS
+    Permutations.CONSONANT: lambda _: VOWELS,
+    Permutations.SUBSTITUTION: lambda _: CONSONANTS
 }

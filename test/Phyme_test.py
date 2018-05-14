@@ -36,6 +36,9 @@ class PhymeTest(unittest.TestCase):
     def test_multisyllable_rhymes(self):
         self.assertTrue('ZOOLOGY' in self.rd.get_perfect_rhymes(
             'toxicology', num_syllables=3))
+        
+    def test_substitution_rhymes(self):
+        self.assertTrue('FASTER' in self.rd.get_substitution_rhymes('factor'))
 
 
 if __name__ == '__main__':
