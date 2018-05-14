@@ -1,5 +1,6 @@
 import rhymeUtils as ru
 from rhymeUtils import PermutedPhone, Permutations, permutation_getters
+from IOUtil import load_word_phone_dict
 
 
 class RhymeTrieNode(object):
@@ -10,16 +11,17 @@ class RhymeTrieNode(object):
         self.phone = phone
         self.words = set()
 
-    def insert(self, phones):
+    def insert(self, phones, word):
         '''Insert a list of phones into this node and its children. Returns the final node of the insert.'''
         if not phones:
+            self.words.add(word)
             return self
         child_node = self.children.get(phones[0])
         if child_node is None:
             child_node = RhymeTrieNode(phones[0], self)
             self.children[phones[0]] = child_node
         remaining_phones = phones[1:]
-        return child_node.insert(remaining_phones)
+        return child_node.insert(remaining_phones, word)
 
     def contains(self, phones):
         '''Given a list of phones, finds the end node in the trie associated with those phones.
@@ -57,12 +59,12 @@ class RhymeTrieNode(object):
 
     def assemble(self):
         '''Aggregate all phones up the trie from this node, inclusive. Returns a generator'''
-        yield self.phone
-        if isinstance(self.parent, RhymeTrieNode):
+        if self.phone:
+            yield self.phone
             yield from self.parent.assemble()
 
     def count_nodes(self):
-        '''Counts the number of children nodes in the trie'''
+        '''Counts the number of nodes in the trie'''
         return 1 + sum(child.count_nodes() for child in self.children.values())
 
     def count_words(self):
@@ -93,3 +95,18 @@ class RhymeTrieNode(object):
                     child = self.children.get(consonant)
                     if child:
                         yield from child.search_permutations(phones)
+
+
+_rt = None
+
+
+def load_rhyme_trie():
+    '''Load a fully-loaded RhymeTrie object'''
+    global _rt
+    word_phone_dict = load_word_phone_dict()
+    if _rt:
+        return _rt
+    _rt = RhymeTrieNode(None, None)
+    for word, phones in word_phone_dict.items():
+        _rt.insert(phones[::-1], word)
+    return _rt

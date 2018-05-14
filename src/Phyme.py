@@ -1,7 +1,7 @@
 import util
 import rhymeUtils as ru
 from IOUtil import load_word_phone_dict, load_phone_type_dicts
-from RhymeTrie import load_rhyme_trie
+from RhymeTrieNode import load_rhyme_trie
 from rhymeUtils import PermutedPhone, Permutations
 
 
@@ -14,7 +14,7 @@ class Phyme(object):
     def search(self, phones):
         '''Search the rhyme trie for sub words given a listen of phones
         Returns a set of strings'''
-        result = self.rhyme_trie.search(phones)
+        result = self.rhyme_trie.search(phones[::-1])
         if result:
             return set(result.get_sub_words())
         else:
@@ -22,7 +22,7 @@ class Phyme(object):
 
     def search_permutations(self, phones):
         phones = list(phones)
-        nodes = set(self.rhyme_trie.search_permutations(phones))
+        nodes = set(self.rhyme_trie.search_permutations(phones[::-1]))
         master_set = set()
         for node in nodes:
             result = node.get_sub_words()
