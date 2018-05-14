@@ -3,6 +3,7 @@ import rhymeUtils as ru
 from IOUtil import load_word_phone_dict, load_phone_type_dicts
 from RhymeTrieNode import load_rhyme_trie
 from rhymeUtils import PermutedPhone, Permutations
+from itertools import groupby
 
 
 class Phyme(object):
@@ -16,18 +17,24 @@ class Phyme(object):
         Returns a set of strings'''
         result = self.rhyme_trie.search(phones[::-1])
         if result:
-            return set(result.get_sub_words())
+            sorted_results = sorted(result.get_sub_words(),
+                                    key=ru.count_syllables)
+            grouped_results = groupby(sorted_results, key=ru.count_syllables)
+            return dict((k, list(v)) for k, v in grouped_results)
         else:
             return None
 
     def search_permutations(self, phones):
         phones = list(phones)
-        nodes = set(self.rhyme_trie.search_permutations(phones[::-1]))
-        master_set = set()
+        nodes = self.rhyme_trie.search_permutations(phones[::-1])
+        result_set = set()
         for node in nodes:
             result = node.get_sub_words()
-            master_set.update(result)
-        return master_set
+            result_set.update(result)
+        sorted_results = sorted(result_set,
+                                key=ru.count_syllables)
+        grouped_results = groupby(sorted_results, key=ru.count_syllables)
+        return dict((k, list(v)) for k, v in grouped_results)
 
     def get_perfect_rhymes(self, word, num_syllables=None):
         """Get perfect rhymes of a word, defaults to last stressed vowel
@@ -45,12 +52,7 @@ class Phyme(object):
         """
 
         phones = ru.get_last_syllables(word, num_syllables)
-        results = self.search(list(util.flatten(phones)))
-        if results:
-            results.remove(word.upper())
-            return results
-        else:
-            return set()
+        return self.search(list(util.flatten(phones)))
 
     def get_family_rhymes(self, word, num_syllables=None):
         '''

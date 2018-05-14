@@ -52,8 +52,8 @@ def is_consonant(phone):
     return not is_vowel(phone)
 
 
-CONSONANTS = {x for x in phone_type_dict if is_consonant(x)}
-VOWELS = {x for x in phone_type_dict if is_vowel(x)}
+CONSONANTS = frozenset(x for x in phone_type_dict if is_consonant(x))
+VOWELS = frozenset(x for x in phone_type_dict if is_vowel(x))
 
 
 def is_voiced(phone):
@@ -80,6 +80,11 @@ def extract_syllables(phones):
         syllable.append(phone)
     syllables.append(syllable)
     return syllables
+
+
+def count_syllables(word):
+    phones = get_phones(word)
+    return len(extract_syllables(phones))
 
 
 def get_last_stressed(syllables):
