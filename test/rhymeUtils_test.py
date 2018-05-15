@@ -1,8 +1,8 @@
 import unittest
 import sys
-sys.path.append('../src')
-import rhymeUtils as ru
-from util import flatten
+sys.path.append('../')
+from Phyme import rhymeUtils as ru
+from Phyme.util import flatten
 
 
 class RhymeUtilsTest(unittest.TestCase):
