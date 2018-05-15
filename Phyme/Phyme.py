@@ -1,9 +1,11 @@
 from . import rhymeUtils as ru
 from .util import flatten
-from .IOUtil import (load_word_phone_dict, load_phone_type_dicts,
-                     load_rhyme_trie)
+from .IOUtil import load_word_phone_dict, load_phone_type_dicts
 from .rhymeUtils import PermutedPhone, Permutations
+from .RhymeTrieNode import RhymeTrieNode
 from itertools import groupby
+
+_rt = None
 
 
 class Phyme(object):
@@ -225,3 +227,14 @@ class Phyme(object):
                      else phone,
                      phones)
         return self.search_permutations(phones)
+
+
+def load_rhyme_trie():
+    global _rt
+    if _rt:
+        return _rt
+    word_phone_dict = load_word_phone_dict()
+    _rt = RhymeTrieNode(None, None)
+    for word, phones in word_phone_dict.items():
+        _rt.insert(phones[::-1], word)
+    return _rt

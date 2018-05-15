@@ -32,11 +32,3 @@ def load_phone_type_dicts():
     with open(os.path.join(file_path, './data/type_phone.json')) as f:
         type_phone_dict.update(json.load(f))
     return phone_type_dict, type_phone_dict
-
-
-def load_rhyme_trie():
-    global _rt
-    if _rt:
-        return _rt
-    with open(os.path.join(file_path, './data/RhymeTrie.pkl'), 'rb') as f:
-        return pickle.load(f)
