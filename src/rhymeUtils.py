@@ -137,9 +137,14 @@ def get_last_syllables(word, num_sylls=None):
         syllables = get_last_stressed(syllables)
     else:
         syllables = syllables[-num_sylls:]
-    if is_consonant(syllables[0][0]):
-        syllables[0] = syllables[0][1:]
+    syllables[0] = strip_leading_consonants(syllables[0])
     return syllables
+
+
+def strip_leading_consonants(phones):
+    for i, phone in enumerate(phones):
+        if is_vowel(phone):
+            return phones[i:]
 
 
 def get_phones(word):

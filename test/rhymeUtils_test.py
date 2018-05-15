@@ -2,6 +2,7 @@ import unittest
 import sys
 sys.path.append('../src')
 import rhymeUtils as ru
+from util import flatten
 
 
 class RhymeUtilsTest(unittest.TestCase):
@@ -54,6 +55,11 @@ class RhymeUtilsTest(unittest.TestCase):
 
     def get_consonant_partners(self):
         self.assertTrue('CH' in ru.get_consonant_partners('JH'))
+
+    def test_strip_leading_consonants(self):
+        phones = ru.get_phones('frog')
+        stripped = ru.strip_leading_consonants(phones)
+        self.assertTrue(ru.is_vowel(stripped[0]))
 
 
 if __name__ == '__main__':
