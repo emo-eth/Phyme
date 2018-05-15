@@ -1,8 +1,8 @@
 import unittest
 import sys
-sys.path.append('../src')
+sys.path.append('../')
 from Phyme import Phyme
-from util import flatten
+from Phyme.util import flatten
 
 
 class PhymeTest(unittest.TestCase):

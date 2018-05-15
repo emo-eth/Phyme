@@ -1,8 +1,9 @@
 import unittest
 import sys
-sys.path.append('../src')
-from RhymeTrieNode import RhymeTrieNode, load_rhyme_trie
-from rhymeUtils import word_phone_dict
+sys.path.append('../')
+from Phyme.RhymeTrieNode import RhymeTrieNode
+from Phyme.IOUtil import load_rhyme_trie
+from Phyme.rhymeUtils import word_phone_dict
 
 
 class RhymeTrieTest(unittest.TestCase):
