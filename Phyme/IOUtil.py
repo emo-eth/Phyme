@@ -18,7 +18,7 @@ def load_word_phone_dict():
     '''Load a dict of word -> phones mappings'''
     if word_phone_dict:
         return word_phone_dict
-    with open(os.path.join(file_path, './data/word_phone.json')) as f:
+    with open(os.path.join(file_path, 'data/word_phone.json')) as f:
         word_phone_dict.update(json.load(f))
     return word_phone_dict
 
@@ -27,8 +27,8 @@ def load_phone_type_dicts():
     '''Load both phone -> type and type -> phone mapped dicts'''
     if phone_type_dict and type_phone_dict:
         return phone_type_dict, type_phone_dict
-    with open(os.path.join(file_path, './data/phone_type.json')) as f:
+    with open(os.path.join(file_path, 'data/phone_type.json')) as f:
         phone_type_dict.update(json.load(f))
-    with open(os.path.join(file_path, './data/type_phone.json')) as f:
+    with open(os.path.join(file_path, 'data/type_phone.json')) as f:
         type_phone_dict.update(json.load(f))
     return phone_type_dict, type_phone_dict
