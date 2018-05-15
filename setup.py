@@ -5,6 +5,7 @@ from Phyme import version
 
 setup(name='Phyme',
       packages=['Phyme'],
+      include_package_data=True,
       version=version,
       description='Python rhyming dictionary for songwriting',
       author='James Wenzel',
