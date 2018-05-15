@@ -7,4 +7,6 @@ git commit -m "version update"
 git push origin master
 git tag $version
 git push --tags origin master
-python setup.py register sdist upload -r pypi
+rm -rf dist/
+python setup.py bdist_wheel --universal
+twine upload dist/*
