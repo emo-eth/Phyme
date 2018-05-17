@@ -2,7 +2,15 @@
 import warnings
 from . import IOUtil
 from collections import defaultdict
-from enum import Enum, auto
+from enum import Enum
+
+
+def _auto():
+    count = 0
+    while True:
+        yield count
+        count += 1
+
 
 STRESSED_FLAGS = frozenset(('1', '2'))
 VOICED_CONSONANTS = frozenset(('B', 'D', 'G', 'V', 'DH', 'Z', 'ZH', 'JH', 'M',
@@ -27,13 +35,13 @@ class PermutedPhone(object):
 
 
 class Permutations(Enum):
-    ADDITIVE = auto()
-    SUBTRACTIVE = auto()
-    PARTNER = auto()
-    FAMILY = auto()
-    ASSONANCE = auto()
-    CONSONANT = auto()
-    SUBSTITUTION = auto()
+    ADDITIVE = _auto()
+    SUBTRACTIVE = _auto()
+    PARTNER = _auto()
+    FAMILY = _auto()
+    ASSONANCE = _auto()
+    CONSONANT = _auto()
+    SUBSTITUTION = _auto()
 
 
 def is_vowel(phone):
