@@ -3,6 +3,7 @@ from .util import flatten
 from .IOUtil import load_word_phone_dict, load_phone_type_dicts
 from .rhymeUtils import PermutedPhone, Permutations
 from .RhymeTrieNode import RhymeTrieNode
+from .songStats import sort_words
 from itertools import groupby
 
 _rt = None
@@ -37,6 +38,9 @@ class Phyme(object):
                                 key=ru.count_syllables)
         grouped_results = groupby(sorted_results, key=ru.count_syllables)
         return dict((k, list(v)) for k, v in grouped_results)
+
+    def search_wrapper(self, phones, word):
+        results = self.search_permutations(phones)
 
     def get_perfect_rhymes(self, word, num_syllables=None):
         """Get perfect rhymes of a word, defaults to last stressed vowel
@@ -75,7 +79,7 @@ class Phyme(object):
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
-            return set()
+            return dict()
         phones = flatten(phones)
         phones = map(lambda phone: PermutedPhone(phone, Permutations.FAMILY)
                      if ru.is_consonant(phone)
@@ -101,7 +105,7 @@ class Phyme(object):
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
-            return set()
+            return dict()
         phones = flatten(phones)
         phones = map(lambda phone: PermutedPhone(phone, Permutations.PARTNER)
                      if ru.is_consonant(phone)
@@ -149,8 +153,7 @@ class Phyme(object):
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
-            return set()
-        results = set()
+            return dict()
         phones = flatten(phones)
         phones = map(lambda phone: PermutedPhone(phone, Permutations.SUBTRACTIVE)
                      if ru.is_consonant(phone)
