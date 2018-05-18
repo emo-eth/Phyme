@@ -23,7 +23,7 @@ ph.get_family_rhymes(word, num_sylls=None)
  # find rhymes with the same vowels and consonants of the same type, regardless of voicing. HAWK -> DOG
 ph.get_partner_rhymes(word)
 
-# find rhymes with the same vowels and consonants, as well as any extra consonants. DO -> DUDE
+# find rhymes with the same vowels and consonants, as well as any extra consonants. DUDES -> DUES
 ph.get_additive_rhymes(word)
 
 # find rhymes with the same vowels and a subset of the same consonants. DUDE -> DO
