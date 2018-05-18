@@ -1,5 +1,6 @@
 import os
 import json
+import re
 
 file_path = os.path.dirname(__file__)
 with open(os.path.join(file_path, 'data/word_keys.json')) as f:
@@ -16,8 +17,13 @@ with open(os.path.join(file_path, 'data/keyed_pairs.json')) as f:
 
 
 # TODO: regex for different(1) pronunciations
+
+def strip_pronunciation_marker(word):
+    return re.sub(re.compile('\(\d+\)'), '', word)
+
+
 def get_count_rank(word):
-    return keyed_counts.get(word_keys.get(word), float('inf'))
+    return keyed_counts.get(word_keys.get(word))
 
 
 def get_paired_words(word):
@@ -36,8 +42,11 @@ def get_paired_words(word):
 def _sort_key(word, pair_dict):
     pair_rank = pair_dict.get(word)
     if pair_rank is not None:
-        return pair_rank
-    return 100000 * (get_count_rank(word) + 1)
+        return str(pair_rank)
+    count_rank = get_count_rank(word)
+    if count_rank is not None:
+        return str(count_rank)
+    return re.sub("'", '', word)
 
 
 def sort_words(inpt, words):

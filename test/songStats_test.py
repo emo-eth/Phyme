@@ -18,11 +18,13 @@ class SongStatsTest(unittest.TestCase):
         self.assertEqual(results[1], 'today')
     
     def test_get_count_missing(self):
-        self.assertEqual(ss.get_count_rank('asdjfklajdsa'), float('inf'))
-    
+        self.assertIsNone(ss.get_count_rank('asdjfklajdsa'))
 
     def test_get_pairs_missing(self):
-        self.assertEqual(ss._sort_key('aslfjalsdf', {'say': 0}), float('inf'))
+        self.assertGreater(ss._sort_key('aslfjalsdf', {'say': 0}), '9999')
+    
+    def test_strip(self):
+        self.assertEqual(ss.strip_pronunciation_marker('cat(1)'), 'cat')
 
 
 if __name__ == '__main__':
