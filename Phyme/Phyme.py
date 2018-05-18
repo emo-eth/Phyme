@@ -39,8 +39,12 @@ class Phyme(object):
         grouped_results = groupby(sorted_results, key=ru.count_syllables)
         return dict((k, list(v)) for k, v in grouped_results)
 
-    def search_wrapper(self, phones, word):
+    def sorted_search(self, phones, keyword):
         results = self.search_permutations(phones)
+        sorted_dict = dict()
+        for k, v in results.items():
+            sorted_dict[k] = list(sort_words(keyword, v))
+        return sorted_dict
 
     def get_perfect_rhymes(self, word, num_syllables=None):
         """Get perfect rhymes of a word, defaults to last stressed vowel
@@ -58,7 +62,7 @@ class Phyme(object):
         """
 
         phones = ru.get_last_syllables(word, num_syllables)
-        return self.search(list(flatten(phones)))
+        return self.sorted_search(list(flatten(phones)), word)
 
     def get_family_rhymes(self, word, num_syllables=None):
         '''
@@ -85,7 +89,7 @@ class Phyme(object):
                      if ru.is_consonant(phone)
                      else phone,
                      phones)
-        return self.search_permutations(phones)
+        return self.sorted_search(phones, word)
 
     def get_partner_rhymes(self, word, num_syllables=None):
         '''
@@ -111,7 +115,7 @@ class Phyme(object):
                      if ru.is_consonant(phone)
                      else phone,
                      phones)
-        return self.search_permutations(phones)
+        return self.sorted_search(phones, word)
 
     def get_additive_rhymes(self, word, num_syllables=None):
         '''
@@ -133,7 +137,7 @@ class Phyme(object):
         phones = flatten(phones)
         phones = map(lambda phone: PermutedPhone(phone, Permutations.ADDITIVE),
                      phones)
-        return self.search_permutations(phones)
+        return self.sorted_search(phones, word)
 
     def get_subtractive_rhymes(self, word, num_syllables=None):
         '''
@@ -159,7 +163,7 @@ class Phyme(object):
                      if ru.is_consonant(phone)
                      else phone,
                      phones)
-        return self.search_permutations(phones)
+        return self.sorted_search(phones, word)
 
     def get_consonant_rhymes(self, word, num_syllables=None):
         '''
@@ -183,7 +187,7 @@ class Phyme(object):
                      if ru.is_vowel(phone)
                      else phone,
                      phones)
-        return self.search_permutations(phones)
+        return self.sorted_search(phones, word)
 
     def get_assonance_rhymes(self, word, num_syllables=None):
         '''
@@ -205,7 +209,7 @@ class Phyme(object):
         phones = flatten(phones)
         phones = map(lambda phone: PermutedPhone(phone, Permutations.ADDITIVE),
                      filter(lambda phone: ru.is_vowel(phone), phones))
-        return self.search_permutations(phones)
+        return self.sorted_search(phones, word)
 
     def get_substitution_rhymes(self, word, num_syllables=None):
         '''
@@ -229,7 +233,7 @@ class Phyme(object):
                      if ru.is_consonant(phone)
                      else phone,
                      phones)
-        return self.search_permutations(phones)
+        return self.sorted_search(phones, word)
 
 
 def load_rhyme_trie():

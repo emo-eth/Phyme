@@ -13,7 +13,7 @@ class RhymeTrieNode(object):
     def insert(self, phones, word):
         '''Insert a list of phones into this node and its children. Returns the final node of the insert.'''
         if not phones:
-            self.words.add(word)
+            self.words.add(word.lower())
             return self
         child_node = self.children.get(phones[0])
         if child_node is None:
