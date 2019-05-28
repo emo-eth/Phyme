@@ -44,6 +44,14 @@ class Phyme(object):
         sorted_dict = dict()
         for k, v in results.items():
             sorted_dict[k] = list(sort_words(keyword, v))
+
+        #This removes the input word from the return of rhymes
+        for syl in sorted_dict:
+            try:
+                sorted_dict[syl].remove(keyword)
+            except:
+                pass
+
         return sorted_dict
 
     def get_perfect_rhymes(self, word, num_syllables=None):
