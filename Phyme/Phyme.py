@@ -47,7 +47,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         """
 
         phones = ru.get_last_syllables(word, num_syllables)
@@ -68,7 +69,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
@@ -94,7 +96,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
@@ -120,7 +123,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         phones = flatten(phones)
@@ -142,7 +146,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
@@ -168,7 +173,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         phones = flatten(phones)
@@ -192,7 +198,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         phones = flatten(phones)
@@ -214,7 +221,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         phones = flatten(phones)
