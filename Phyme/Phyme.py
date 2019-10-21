@@ -15,19 +15,8 @@ class Phyme(object):
     def __init__(self):
         self.rhyme_trie = load_rhyme_trie()
 
-    def search(self, phones):
-        '''Search the rhyme trie for sub words given a listen of phones
-        Returns a set of strings'''
-        result = self.rhyme_trie.search(phones[::-1])
-        if result:
-            sorted_results = sorted(result.get_sub_words(),
-                                    key=ru.count_syllables)
-            grouped_results = groupby(sorted_results, key=ru.count_syllables)
-            return dict((k, list(v)) for k, v in grouped_results)
-        else:
-            return None
-
     def search_permutations(self, phones):
+        '''Search the rhyme trie for sub words given a listen of phones'''
         phones = list(phones)
         nodes = self.rhyme_trie.search_permutations(phones[::-1])
         result_set = set()
@@ -43,7 +32,7 @@ class Phyme(object):
         results = self.search_permutations(phones)
         sorted_dict = dict()
         for k, v in results.items():
-            sorted_dict[k] = list(sort_words(keyword, v))
+            sorted_dict[k] = sort_words(keyword, v)
         return sorted_dict
 
     def get_perfect_rhymes(self, word, num_syllables=None):
@@ -58,7 +47,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         """
 
         phones = ru.get_last_syllables(word, num_syllables)
@@ -79,7 +69,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
@@ -105,7 +96,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
@@ -131,7 +123,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         phones = flatten(phones)
@@ -153,7 +146,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
@@ -179,7 +173,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         phones = flatten(phones)
@@ -203,7 +198,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         phones = flatten(phones)
@@ -225,7 +221,8 @@ class Phyme(object):
                 unstressed
 
         Returns:
-            [set] -- set of rhymes
+            [dict<int, list<string>] - dict of lists of rhymes keyed by number
+                of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
         phones = flatten(phones)

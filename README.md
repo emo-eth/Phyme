@@ -20,16 +20,16 @@ ph.get_perfect_rhymes(word, num_sylls=None)
 # find rhymes with the same vowels and consonants of the same type (fricative, plosive, etc) and voicing (voiced or unvoiced). FOB -> DOG
 ph.get_family_rhymes(word, num_sylls=None)
 
- # find rhymes with the same vowels and consonants of the same type, regardless of voicing. HAWK -> DOG
+# find rhymes with the same vowels and consonants of the same type, regardless of voicing. HAWK -> DOG
 ph.get_partner_rhymes(word)
 
-# find rhymes with the same vowels and consonants, as well as any extra consonants. DUDES -> DUES
+# find rhymes with the same vowels and consonants, as well as any extra consonants. DUES -> DUDES
 ph.get_additive_rhymes(word)
 
 # find rhymes with the same vowels and a subset of the same consonants. DUDE -> DO
 ph.get_subtractive_rhymes(word)  
 
-# find rhymes with the same vowels and some of the same consonants, with some swapped out for other consonants. FACTOR -> FASTER
+# find rhymes with the same vowels and some of the same consonants, with others swapped out for other consonants. FACTOR -> FASTER
 ph.get_substitution_rhymes(word) 
 
 # find rhymes with the same vowels and arbitrary consonants. CASH -> CATS
