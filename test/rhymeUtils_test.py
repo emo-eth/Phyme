@@ -2,7 +2,6 @@ import unittest
 import sys
 sys.path.append('../')
 from Phyme import rhymeUtils as ru
-from Phyme.util import flatten
 
 
 class RhymeUtilsTest(unittest.TestCase):

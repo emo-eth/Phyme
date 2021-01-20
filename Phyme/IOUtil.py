@@ -1,17 +1,18 @@
 '''Utils for loading and parsing pronunciation data into data structures'''
 import json
-import pickle
 import os
-from collections import defaultdict
+from typing import Dict
+
+from .util import Phone, PhoneType
+
 
 file_path = os.path.dirname(__file__)
 
 # use global objects so we don't load data each time we call a method
-word_phone_dict = {}
-phone_type_dict = {}
-type_phone_dict = {}
-type_voiced_phone_dict = defaultdict(lambda: defaultdict(set))
-_rt = None
+word_phone_dict: Dict[str, Phone] = {}
+phone_type_dict: Dict[Phone, PhoneType] = {}
+type_phone_dict: Dict[PhoneType, Phone] = {}
+# type_voiced_phone_dict: Dict[] = defaultdict(lambda: defaultdict(set))
 
 
 def load_word_phone_dict():

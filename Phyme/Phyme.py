@@ -1,12 +1,13 @@
+from typing import Dict, Iterable, List, Set, Union
 from . import rhymeUtils as ru
 from .util import flatten
-from .IOUtil import load_word_phone_dict, load_phone_type_dicts
-from .rhymeUtils import PermutedPhone, Permutations
+from .IOUtil import load_word_phone_dict
+from .rhymeUtils import PermutedPhone, Permutation, Phone, permuted_phone_mapper
 from .RhymeTrieNode import RhymeTrieNode
 from .songStats import sort_words
 from itertools import groupby
 
-_rt = None
+_rt: Union[RhymeTrieNode, None] = None
 
 
 class Phyme(object):
@@ -15,11 +16,11 @@ class Phyme(object):
     def __init__(self):
         self.rhyme_trie = load_rhyme_trie()
 
-    def search_permutations(self, phones):
+    def search_permutations(self, phones) -> Dict[int, List[str]]:
         '''Search the rhyme trie for sub words given a listen of phones'''
         phones = list(phones)
         nodes = self.rhyme_trie.search_permutations(phones[::-1])
-        result_set = set()
+        result_set: Set[str] = set()
         for node in nodes:
             result = node.get_sub_words()
             result_set.update(result)
@@ -28,14 +29,14 @@ class Phyme(object):
         grouped_results = groupby(sorted_results, key=ru.count_syllables)
         return dict((k, list(v)) for k, v in grouped_results)
 
-    def sorted_search(self, phones, keyword):
+    def sorted_search(self, phones:Iterable[Union[Phone, PermutedPhone]], keyword:str) -> Dict[int, List[str]]:
         results = self.search_permutations(phones)
-        sorted_dict = dict()
+        sorted_dict: Dict[int, List[str]] = dict()
         for k, v in results.items():
             sorted_dict[k] = sort_words(keyword, v)
         return sorted_dict
 
-    def get_perfect_rhymes(self, word, num_syllables=None):
+    def get_perfect_rhymes(self, word:str, num_syllables: int=-1) -> Dict[int, List[str]]:
         """Get perfect rhymes of a word, defaults to last stressed vowel
 
         Arguments:
@@ -54,7 +55,7 @@ class Phyme(object):
         phones = ru.get_last_syllables(word, num_syllables)
         return self.sorted_search(list(flatten(phones)), word)
 
-    def get_family_rhymes(self, word, num_syllables=None):
+    def get_family_rhymes(self, word:str, num_syllables: int=-1) -> Dict[int, List[str]]:
         '''
         Get words with the same vowel and stress patterns but with consonants
         from the same family (consonants with the same articulation and
@@ -75,14 +76,11 @@ class Phyme(object):
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
             return dict()
-        phones = flatten(phones)
-        phones = map(lambda phone: PermutedPhone(phone, Permutations.FAMILY)
-                     if ru.is_consonant(phone)
-                     else phone,
-                     phones)
-        return self.sorted_search(phones, word)
+        flattened_phones = flatten(phones)
+        permuted_phones = map(permuted_phone_mapper(Permutation.FAMILY, ru.is_consonant), flattened_phones)
+        return self.sorted_search(permuted_phones, word)
 
-    def get_partner_rhymes(self, word, num_syllables=None):
+    def get_partner_rhymes(self, word:str, num_syllables: int=-1) -> Dict[int, List[str]]:
         '''
         Get words with the same vowel and stress patterns but with partner
         consonants (consonants with the same articulation) (HAWK -> DOG)
@@ -102,14 +100,13 @@ class Phyme(object):
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
             return dict()
-        phones = flatten(phones)
-        phones = map(lambda phone: PermutedPhone(phone, Permutations.PARTNER)
-                     if ru.is_consonant(phone)
-                     else phone,
-                     phones)
-        return self.sorted_search(phones, word)
+        flattened_phones = flatten(phones)
 
-    def get_additive_rhymes(self, word, num_syllables=None):
+        permuted_phones = map(permuted_phone_mapper(Permutation.PARTNER, ru.is_consonant), flattened_phones)
+
+        return self.sorted_search(permuted_phones, word)
+
+    def get_additive_rhymes(self, word: str, num_syllables: int=-1) -> Dict[int, List[str]]:
         '''
         Get words with the same vowel and stress patterns but including
         additional consonants (MATTER -> MASTER)
@@ -127,12 +124,18 @@ class Phyme(object):
                 of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
-        phones = flatten(phones)
-        phones = map(lambda phone: PermutedPhone(phone, Permutations.ADDITIVE),
-                     phones)
-        return self.sorted_search(phones, word)
+        flattened_phones = flatten(phones)
+        permuted_phones = map(permuted_phone_mapper(Permutation.ADDITIVE, lambda _: True), flattened_phones)
 
-    def get_subtractive_rhymes(self, word, num_syllables=None):
+        return self.sorted_search(permuted_phones, word)
+
+    def get_by_vowel(self, vowel: Phone) -> Dict[int, List[str]]:
+        if not vowel[-1].isnumeric():
+            vowel = vowel + "1"
+        phones = [PermutedPhone(vowel, Permutation.ADDITIVE)]
+        return self.sorted_search(phones, vowel)
+
+    def get_subtractive_rhymes(self, word, num_syllables=None) -> Dict[int, List[str]]:
         '''
         Get words with the same vowel and stress patterns but dropping some
         consonants (MASTER -> MATTER)
@@ -152,14 +155,12 @@ class Phyme(object):
         phones = ru.get_last_syllables(word, num_syllables)
         if not ru.is_consonant(phones[0][-1]):
             return dict()
-        phones = flatten(phones)
-        phones = map(lambda phone: PermutedPhone(phone, Permutations.SUBTRACTIVE)
-                     if ru.is_consonant(phone)
-                     else phone,
-                     phones)
-        return self.sorted_search(phones, word)
+        flattened_phones = flatten(phones)
+        permuted_phones = map(permuted_phone_mapper(Permutation.SUBTRACTIVE, ru.is_consonant), flattened_phones)
 
-    def get_consonant_rhymes(self, word, num_syllables=None):
+        return self.sorted_search(permuted_phones, word)
+
+    def get_consonant_rhymes(self, word, num_syllables=None) -> Dict[int, List[str]]:
         '''
         Get words with the same stress patterns and consonants but with
         arbitrary vowels (DOG -> BAG)
@@ -177,14 +178,12 @@ class Phyme(object):
                 of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
-        phones = flatten(phones)
-        phones = map(lambda phone: PermutedPhone(phone, Permutations.CONSONANT)
-                     if ru.is_vowel(phone)
-                     else phone,
-                     phones)
-        return self.sorted_search(phones, word)
+        flattened_phones = flatten(phones)
+        permuted_phones = map(permuted_phone_mapper(Permutation.CONSONANT, ru.is_vowel), flattened_phones)
 
-    def get_assonance_rhymes(self, word, num_syllables=None):
+        return self.sorted_search(permuted_phones, word)
+
+    def get_assonance_rhymes(self, word, num_syllables=None) -> Dict[int, List[str]]:
         '''
         Get words with the same vowels and stress patterns but arbitrary
         consonants (JAUNT -> DOG)
@@ -202,12 +201,12 @@ class Phyme(object):
                 of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
-        phones = flatten(phones)
-        phones = map(lambda phone: PermutedPhone(phone, Permutations.ADDITIVE),
-                     filter(lambda phone: ru.is_vowel(phone), phones))
-        return self.sorted_search(phones, word)
+        flattened_phones = flatten(phones)
+        permuted_phones = map(permuted_phone_mapper(Permutation.ADDITIVE, lambda _: True), filter(lambda phone: ru.is_vowel(phone), flattened_phones))
 
-    def get_substitution_rhymes(self, word, num_syllables=None):
+        return self.sorted_search(permuted_phones, word)
+
+    def get_substitution_rhymes(self, word, num_syllables=None) -> Dict[int, List[str]]:
         '''
         Get words with the same vowels and stress patterns but substitute
         arbitrary consonants (FASTER -> FACTOR)
@@ -225,15 +224,12 @@ class Phyme(object):
                 of syllables
         '''
         phones = ru.get_last_syllables(word, num_syllables)
-        phones = flatten(phones)
-        phones = map(lambda phone: PermutedPhone(phone, Permutations.SUBSTITUTION)
-                     if ru.is_consonant(phone)
-                     else phone,
-                     phones)
-        return self.sorted_search(phones, word)
+        flattened_phones = flatten(phones)
+        permuted_phones = map(permuted_phone_mapper(Permutation.SUBSTITUTION, ru.is_consonant), flattened_phones)
+        return self.sorted_search(permuted_phones, word)
 
 
-def load_rhyme_trie():
+def load_rhyme_trie() -> RhymeTrieNode:
     global _rt
     if _rt:
         return _rt

@@ -1,7 +1,6 @@
 import unittest
 import sys
 sys.path.append('../')
-from Phyme.RhymeTrieNode import RhymeTrieNode
 from Phyme.Phyme import load_rhyme_trie
 from Phyme.rhymeUtils import word_phone_dict
 
