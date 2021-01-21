@@ -19,10 +19,15 @@ AFFRICATE = 'affricate'
 FRICATIVE = 'fricative'
 VOWEL = 'vowel'
 
-phone_type_dict, type_phone_dict = IOUtil.load_phone_type_dicts()
-word_phone_dict = IOUtil.load_word_phone_dict()
-type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Set[Phone]]] = defaultdict(lambda: defaultdict(set))
+_phone_type_dict, type_phone_dict = IOUtil.load_phone_type_dicts()
+_word_phone_dict = IOUtil.load_word_phone_dict()
+_type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Set[Phone]]] = defaultdict(lambda: defaultdict(set))
 
+class UnknownPronunciationException(KeyError):
+
+    def __init__(self, word):
+        self.message = 'Word "{word}" is not in the loaded pronunciation dictionary.'.format(word=word)
+        super().__init__(self)
 
 class MetaPhone(object):
     def __init__(self, phone: Phone, replacement_phones: List[Phone]):
@@ -52,20 +57,14 @@ class PermutedPhone(object):
     def __repr__(self):
         return self.phone + ' ' + self.permutation.name
 
-
-class Permutation(Enum):
-    ADDITIVE = _auto()
-    SUBTRACTIVE = _auto()
-    PARTNER = _auto()
-    FAMILY = _auto()
-    ASSONANCE = _auto()
-    CONSONANT = _auto()
-    SUBSTITUTION = _auto()
-
-
-def permuted_phone_mapper(permutation: Permutation,
-                          test: Callable[[Phone], bool]) -> Callable[[Phone], Union[Phone, PermutedPhone]]:
-    return lambda x: PermutedPhone(phone, permutation) if test(phone) else phone
+# class Permutation(Enum):
+#     ADDITIVE = _auto()
+#     SUBTRACTIVE = _auto()
+#     PARTNER = _auto()
+#     FAMILY = _auto()
+#     ASSONANCE = _auto()
+#     CONSONANT = _auto()
+#     SUBSTITUTION = _auto()
 
 def is_vowel(phone: Union[Phone, PermutedPhone]) -> bool:
     '''
@@ -74,7 +73,7 @@ def is_vowel(phone: Union[Phone, PermutedPhone]) -> bool:
     '''
     if isinstance(phone, PermutedPhone):
         phone = phone.phone
-    return phone_type_dict.get(phone) == VOWEL
+    return _phone_type_dict.get(phone) == VOWEL
 
 
 def is_consonant(phone: Union[Phone, PermutedPhone]):
@@ -85,8 +84,8 @@ def is_consonant(phone: Union[Phone, PermutedPhone]):
     return not is_vowel(phone)
 
 
-CONSONANTS = frozenset(x for x in phone_type_dict if is_consonant(x))
-VOWELS = frozenset(x for x in phone_type_dict if is_vowel(x))
+CONSONANTS = frozenset(x for x in _phone_type_dict if is_consonant(x))
+VOWELS = frozenset(x for x in _phone_type_dict if is_vowel(x))
 
 
 def is_voiced(phone):
@@ -151,20 +150,24 @@ def is_stressed(syllable: Syllable):
 
 def get_consonant_family(consonant: Phone):
     '''Given a consonant, get its family (type, voiced) members'''
-    family = phone_type_dict[consonant]
-    return type_voiced_phone_dict[family][is_voiced(consonant)]
+    family = _phone_type_dict[consonant]
+    return _type_voiced_phone_dict[family][is_voiced(consonant)]
 
 
 def get_consonant_partners(consonant):
     '''Given a consonant, get its type members'''
-    family = phone_type_dict[consonant]
+    family = _phone_type_dict[consonant]
     return type_phone_dict[family]
 
 
 def get_last_syllables(word:str, num_sylls: int=-1) -> List[Syllable]:
     # TODO: care about stresses?
     word = word.upper()
-    phones = word_phone_dict[word]
+    try:
+        phones = _word_phone_dict[word]
+    except KeyError:
+        raise UnknownPronunciationException(word)
+
     syllables = extract_syllables(phones)
     if num_sylls == -1:
         syllables = get_last_stressed(syllables)
@@ -182,23 +185,36 @@ def strip_leading_consonants(phones) -> List[Phone]:
 
 
 def get_phones(word: str) -> List[Phone]:
-    return word_phone_dict[word.upper()]
+    return _word_phone_dict[word.upper()]
 
 
 # TODO: move this to IOUtil? But depends on is_voiced fn
-for type_, phones in type_phone_dict.items():
-    for phone in phones:
-        if is_voiced(phone):
-            type_voiced_phone_dict[type_][True].add(phone)
+for _type, _phones in type_phone_dict.items():
+    for _phone in _phones:
+        if is_voiced(_phone):
+            _type_voiced_phone_dict[_type][True].add(_phone)
         else:
-            type_voiced_phone_dict[type_][False].add(phone)
+            _type_voiced_phone_dict[_type][False].add(_phone)
+        
+class Permutation(Enum):
+    def __new__(cls, *args, **kwds):
+        value = len(cls.__members__) + 1
+        obj = object.__new__(cls)
+        obj._value_ = value
+        return obj
 
-permutation_getters: Dict[Permutation, Callable[[Phone], Iterable[Phone]]] = {
-    Permutation.ADDITIVE: lambda x: [x],
-    Permutation.SUBTRACTIVE: lambda x: [x],
-    Permutation.PARTNER: get_consonant_partners,
-    Permutation.FAMILY: get_consonant_family,
-    Permutation.ASSONANCE: lambda x: [x],
-    Permutation.CONSONANT: lambda _: VOWELS,
-    Permutation.SUBSTITUTION: lambda _: CONSONANTS
-}
+    def __init__(self, f: Callable[[Phone], Phone]):
+        self.apply = f
+    
+    ADDITIVE = lambda x: [x]
+    SUBTRACTIVE = lambda x: [x]
+    PARTNER = get_consonant_partners
+    FAMILY = get_consonant_family
+    ASSONANCE = lambda x: [x]
+    CONSONANT = lambda _: VOWELS
+    SUBSTITUTION = lambda _: CONSONANTS
+
+
+def permuted_phone_mapper(permutation: Permutation,
+                          test: Callable[[Phone], bool]) -> Callable[[Phone], Union[Phone, PermutedPhone]]:
+    return lambda phone: PermutedPhone(phone, permutation) if test(phone) else phone

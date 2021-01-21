@@ -5,7 +5,7 @@ Pronunciation is taken from [The CMU Pronouncing Dictionary](http://www.speech.c
 
 To install Phyme, use `pip install phyme`
 
-By default, Phyme rhymes words based on the last stressed syllable or last stressed-unstressed pair of syllables. Passing in the `num_sylls=x` keyword arg will find rhymes with more syllables.
+By default, Phyme rhymes words based on the last stressed syllable or last stressed-unstressed pair of syllables.
 
 Phyme supports 6 types of rhymes:  
 
@@ -26,7 +26,7 @@ ph.get_partner_rhymes(word)
 # find rhymes with the same vowels and consonants, as well as any extra consonants. DUES -> DUDES
 ph.get_additive_rhymes(word)
 
-# find rhymes with the same vowels and a subset of the same consonants. DUDE -> DO
+# find rhymes with the same vowels and a (possibly empty) subset of the same consonants. DUDES -> DUDE, DUDE -> DO
 ph.get_subtractive_rhymes(word)  
 
 # find rhymes with the same vowels and some of the same consonants, with others swapped out for other consonants. FACTOR -> FASTER

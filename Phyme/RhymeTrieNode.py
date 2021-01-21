@@ -1,6 +1,5 @@
 from typing import Dict, Iterable, List, Set, Union
-from .rhymeUtils import (PermutedPhone, Permutation, Phone, permutation_getters,
-                         CONSONANTS)
+from .rhymeUtils import (PermutedPhone, Permutation, Phone, CONSONANTS)
 
 
 class RhymeTrieNode(object):
@@ -78,8 +77,7 @@ class RhymeTrieNode(object):
 
     def _get_permuted_phones(self, phone: Union[Phone, PermutedPhone]) -> Iterable[Phone]:
         if isinstance(phone, PermutedPhone):
-            getter = permutation_getters[phone.permutation]
-            yield from getter(phone.phone)
+            yield from phone.permutation.apply(phone.phone)
         else:
             yield phone
 

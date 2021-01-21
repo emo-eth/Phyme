@@ -2,6 +2,7 @@
 from typing import Iterable, List, TypeVar
 
 
+# TODO: break out into constants file?
 Phone = str
 PhoneType = str
 Syllable = List[Phone]
