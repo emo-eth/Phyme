@@ -1,5 +1,6 @@
 import unittest
 import sys
+
 sys.path.append('../')
 from Phyme import rhymeUtils as ru
 
@@ -22,10 +23,10 @@ class RhymeUtilsTest(unittest.TestCase):
 
     def test_is_voiced(self):
         # is_voiced distinguishes between un/voiced consonants. vowels are voiced
-        self.assertTrue(ru.is_voiced('JH'))
-        self.assertTrue(ru.is_voiced('Z'))
-        self.assertFalse(ru.is_voiced('CH'))
-        self.assertTrue(ru.is_voiced('AY'))
+        self.assertTrue(ru._is_voiced('JH'))
+        self.assertTrue(ru._is_voiced('Z'))
+        self.assertFalse(ru._is_voiced('CH'))
+        self.assertTrue(ru._is_voiced('AY'))
 
     def test_get_last_stressed(self):
         # test get_last_stressed gets the last stressed syllable and following unstressed
@@ -37,17 +38,17 @@ class RhymeUtilsTest(unittest.TestCase):
         self.assertEqual(len(stressed), 1)
 
     def test_is_vowel(self):
-        self.assertTrue(ru.is_vowel('AY'))
-        self.assertFalse(ru.is_vowel('ZH'))
+        self.assertTrue(ru._is_vowel('AY'))
+        self.assertFalse(ru._is_vowel('ZH'))
 
     def test_is_consonant(self):
-        self.assertTrue(ru.is_consonant('ZH'))
-        self.assertFalse(ru.is_consonant('AY'))
+        self.assertTrue(ru._is_consonant('ZH'))
+        self.assertFalse(ru._is_consonant('AY'))
 
     def test_is_stressed(self):
-        self.assertTrue(ru.is_stressed(['AY1']))
-        self.assertTrue(ru.is_stressed(['AY2']))
-        self.assertFalse(ru.is_stressed(['AY0']))
+        self.assertTrue(ru.is_stressed([ru.Phone('AY1')]))
+        self.assertTrue(ru.is_stressed([ru.Phone('AY2')]))
+        self.assertFalse(ru.is_stressed([ru.Phone('AY0')]))
 
     def test_get_consonant_family(self):
         self.assertTrue('ZH' in ru.get_consonant_family('Z'))
@@ -58,7 +59,7 @@ class RhymeUtilsTest(unittest.TestCase):
     def test_strip_leading_consonants(self):
         phones = ru.get_phones('frog')
         stripped = ru.strip_leading_consonants(phones)
-        self.assertTrue(ru.is_vowel(stripped[0]))
+        self.assertTrue(stripped[0].is_vowel)
 
 
 if __name__ == '__main__':

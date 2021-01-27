@@ -19,7 +19,7 @@ class PhoneClasses(unittest.TestCase):
         self.assertEqual(consonant_phone, consonant)
         self.assertTrue(consonant_phone.is_consonant)
         self.assertFalse(consonant_phone.is_vowel)
-        self.assertEqual(consonant_phone.is_voiced, ru.is_voiced(consonant))
+        self.assertEqual(consonant_phone.is_voiced, ru._is_voiced(consonant))
     
     def testMetaPhone(self):
         # "the"
@@ -46,12 +46,14 @@ class PhoneClasses(unittest.TestCase):
         self.assertFalse(meta.is_voiced)
 
     def testMetaVowel(self):
-            # "the"
+            # y is i
             y = "Y"
             i = "IY"
             y_phone = ru.Phone(y)
             i_phone = ru.Phone(i)
             meta = ru.MetaVowel(y, i)
+            meta_copy = ru.MetaVowel(y, i)
+            self.assertEqual(meta_copy, meta)
             self.assertEqual(meta, y)
             self.assertEqual(meta, i)
             self.assertEqual(meta, y_phone)
@@ -59,7 +61,7 @@ class PhoneClasses(unittest.TestCase):
             self.assertTrue(meta.is_voiced)
             self.assertTrue(meta.is_vowel)
             self.assertFalse(meta.is_consonant)
-            # "tree"
+            # w is u
             w = "W"
             u = "UW"
             w_phone = ru.Phone(w)
@@ -72,3 +74,18 @@ class PhoneClasses(unittest.TestCase):
             self.assertTrue(meta.is_voiced)
             self.assertTrue(meta.is_vowel)
             self.assertFalse(meta.is_consonant)
+        
+    def testHash(self):
+        phone1 = ru.Phone("IY")
+        phone2 = ru.Phone("UW")
+        phone1_copy = ru.Phone("IY")
+        phone2_copy = ru.Phone("UW")
+        phone_set = {phone1, phone2}
+        self.assertTrue(phone1_copy in phone_set)
+        self.assertTrue(phone2_copy in phone_set)
+
+        metaPhone = ru.MetaPhone("TH", "DH")
+        phone3 = ru.Phone("TH")
+        phone_set2 = {phone3}
+        self.assertTrue(metaPhone in phone_set2)
+

@@ -5,6 +5,8 @@ from collections import defaultdict
 from typing import Dict, List
 
 from Phyme.constants import StringPhone, PhoneType, VOWEL, AFFRICATE, FRICATIVE
+from Phyme.rhymeUtils import Phone, _is_voiced
+
 
 file_path = os.path.dirname(__file__)
 
@@ -47,13 +49,12 @@ def load_phone_type_dicts():
 
 
 def load_type_voiced_phone_dict():
-    from Phyme.rhymeUtils import is_voiced
     _, type_phone_dict = load_phone_type_dicts()
     type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Dict[StringPhone, StringPhone]]] = defaultdict(
         lambda: defaultdict(dict))
     for type_, phones in type_phone_dict.items():
         for phone in phones:
-            if is_voiced(phone):
+            if _is_voiced(phone):
                 type_voiced_phone_dict[type_][True][phone] = phone
             else:
                 type_voiced_phone_dict[type_][False][phone] = phone
@@ -66,7 +67,8 @@ def load_rhyme_trie():
     word_phone_dict = load_word_phone_dict()
     rt = RhymeTrieNode(None, None)
     for word, phones in word_phone_dict.items():
-        rt.insert(phones[::-1], word)
+        mapped_phones = [Phone(phone) for phone in phones]
+        rt.insert(mapped_phones[::-1], word)
     return rt
 
 
