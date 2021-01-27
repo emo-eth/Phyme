@@ -1,4 +1,4 @@
-from typing import Dict, Iterable, List, Set, Union
+from typing import Dict, Iterable, List, Optional, Set, Union
 from .rhymeUtils import (PermutedPhone, Permutation, Phone, CONSONANTS)
 
 
@@ -28,12 +28,13 @@ class RhymeTrieNode(object):
         if phones:
             child_node = self.children.get(phones[0])
             if child_node:
-                return child_node.search(phones[1:])
+                search_results = child_node.search(phones[1:])
+                return search_results if search_results is not None else False
         elif self.words:
             return self
         return False
 
-    def search(self, phones: List[Phone]) -> Union['RhymeTrieNode', bool]:
+    def search(self, phones: List[Phone]) -> Optional['RhymeTrieNode']:
         '''Given a list of phones, find a node in the trie associated with those phones.
         Returns a RhymeTrieNode or None if there is no node associated with the given phones'''
         if not phones:
@@ -41,7 +42,7 @@ class RhymeTrieNode(object):
         child_node = self.children.get(phones[0])
         if child_node:
             return child_node.search(phones[1:])
-        return False
+        return None
 
     def search_permutations(self, phones: List[Union[Phone, PermutedPhone]]) -> Iterable['RhymeTrieNode']:
         '''Returns a generator of nodes'''

@@ -1,33 +1,24 @@
 '''Utils related to rhyming'''
-from .util import Phone, PhoneType, Syllable
 from . import IOUtil
+from .constants import Phone, PhoneType, STRESSED_FLAGS, Syllable, VOICED_CONSONANTS, VOWEL
 from collections import defaultdict
 from enum import Enum
-from typing import Callable, Dict, Iterable, List, Set, Union
+from typing import Callable, Dict, List, Set, Union
 
-def _auto():
-    count = 0
-    while True:
-        yield count
-        count += 1
-
-
-STRESSED_FLAGS = frozenset(('1', '2'))
-VOICED_CONSONANTS = frozenset(('B', 'D', 'G', 'V', 'DH', 'Z', 'ZH', 'JH', 'M',
-                               'N', 'NG', 'L', 'R'))
-AFFRICATE = 'affricate'
-FRICATIVE = 'fricative'
-VOWEL = 'vowel'
 
 _phone_type_dict, type_phone_dict = IOUtil.load_phone_type_dicts()
 _word_phone_dict = IOUtil.load_word_phone_dict()
-_type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Set[Phone]]] = defaultdict(lambda: defaultdict(set))
+_type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Set[Phone]]] = defaultdict(
+    lambda: defaultdict(set))
+
 
 class UnknownPronunciationException(KeyError):
 
     def __init__(self, word):
-        self.message = 'Word "{word}" is not in the loaded pronunciation dictionary.'.format(word=word)
+        self.message = 'Word "{word}" is not in the loaded pronunciation dictionary.'.format(
+            word=word)
         super().__init__(self)
+
 
 class MetaPhone(object):
     def __init__(self, phone: Phone, replacement_phones: List[Phone]):
@@ -40,13 +31,17 @@ class MetaPhone(object):
         elif isinstance(other, MetaVowel):
             return len(self.replacement_phones.union(other.replacement_phones)) != 0
 
+
 class MetaVowel(MetaPhone):
     pass
 
 # TODO: meta consonants, as in interchangeable phonemes?
 # eg: draft becoming jraft
+
+
 class MetaConsonant(MetaPhone):
     pass
+
 
 class PermutedPhone(object):
 
@@ -65,6 +60,7 @@ class PermutedPhone(object):
 #     ASSONANCE = _auto()
 #     CONSONANT = _auto()
 #     SUBSTITUTION = _auto()
+
 
 def is_vowel(phone: Union[Phone, PermutedPhone]) -> bool:
     '''
@@ -114,7 +110,7 @@ def extract_syllables(phones: List[Phone]) -> List[Syllable]:
     return syllables
 
 
-def count_syllables(word:str):
+def count_syllables(word: str):
     phones = get_phones(word)
     return len(extract_syllables(phones))
 
@@ -160,7 +156,7 @@ def get_consonant_partners(consonant):
     return type_phone_dict[family]
 
 
-def get_last_syllables(word:str, num_sylls: int=-1) -> List[Syllable]:
+def get_last_syllables(word: str, num_sylls: int = -1) -> List[Syllable]:
     # TODO: care about stresses?
     word = word.upper()
     try:
@@ -195,7 +191,8 @@ for _type, _phones in type_phone_dict.items():
             _type_voiced_phone_dict[_type][True].add(_phone)
         else:
             _type_voiced_phone_dict[_type][False].add(_phone)
-        
+
+
 class Permutation(Enum):
     def __new__(cls, *args, **kwds):
         value = len(cls.__members__) + 1
@@ -205,14 +202,13 @@ class Permutation(Enum):
 
     def __init__(self, f: Callable[[Phone], Phone]):
         self.apply = f
-    
-    ADDITIVE = lambda x: [x]
-    SUBTRACTIVE = lambda x: [x]
-    PARTNER = get_consonant_partners
-    FAMILY = get_consonant_family
-    ASSONANCE = lambda x: [x]
-    CONSONANT = lambda _: VOWELS
-    SUBSTITUTION = lambda _: CONSONANTS
+
+    ADDITIVE = lambda x: [x],
+    SUBTRACTIVE = lambda x: [x],
+    PARTNER = get_consonant_partners,
+    FAMILY = get_consonant_family,
+    CONSONANT = lambda _: VOWELS,
+    SUBSTITUTION = lambda _: CONSONANTS,
 
 
 def permuted_phone_mapper(permutation: Permutation,

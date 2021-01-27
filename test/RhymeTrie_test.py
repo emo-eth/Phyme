@@ -11,10 +11,12 @@ class RhymeTrieTest(unittest.TestCase):
     def test_search(self):
         for word, phones in _word_phone_dict.items():
             retrieved = self.rt.search(phones[::-1])
+            self.assertIsNotNone(retrieved)
             self.assertTrue(word.lower() in retrieved.words)
 
     def test_get_sub_words(self):
         leven = self.rt.search(_word_phone_dict['LEVEN'][::-1])
+        self.assertIsNotNone(leven)
         self.assertTrue('kleven' in set(leven.get_sub_words()))
 
     def test_contains(self):

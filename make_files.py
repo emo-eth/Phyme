@@ -1,17 +1,12 @@
 import json
 import pickle
 import os
-import sys
 from collections import defaultdict
 from typing import Dict, List
 
-from Phyme.util import Phone, PhoneType
+from Phyme.constants import Phone, PhoneType, VOWEL, AFFRICATE, FRICATIVE
 
 file_path = os.path.dirname(__file__)
-
-AFFRICATE = 'affricate'
-FRICATIVE = 'fricative'
-VOWEL = 'vowel'
 
 
 def load_word_phone_dict() -> Dict[str, List[Phone]]:
@@ -54,7 +49,8 @@ def load_phone_type_dicts():
 def load_type_voiced_phone_dict():
     from Phyme.rhymeUtils import is_voiced
     _, type_phone_dict = load_phone_type_dicts()
-    type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Dict[Phone, Phone]]] = defaultdict(lambda: defaultdict(dict))
+    type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Dict[Phone, Phone]]] = defaultdict(
+        lambda: defaultdict(dict))
     for type_, phones in type_phone_dict.items():
         for phone in phones:
             if is_voiced(phone):
@@ -101,7 +97,6 @@ def main():
     write_json()
     write_dependent_json()
     write_pickle()
-
 
 
 if __name__ == '__main__':

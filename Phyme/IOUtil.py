@@ -1,9 +1,8 @@
 '''Utils for loading and parsing pronunciation data into data structures'''
+from .constants import Phone, PhoneType
 import json
 import os
 from typing import Dict
-
-from .util import Phone, PhoneType
 
 
 file_path = os.path.dirname(__file__)
