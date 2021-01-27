@@ -1,5 +1,5 @@
 '''Utils for loading and parsing pronunciation data into data structures'''
-from .constants import Phone, PhoneType
+from .constants import StringPhone, PhoneType
 import json
 import os
 from typing import Dict
@@ -8,9 +8,9 @@ from typing import Dict
 file_path = os.path.dirname(__file__)
 
 # use global objects so we don't load data each time we call a method
-word_phone_dict: Dict[str, Phone] = {}
-phone_type_dict: Dict[Phone, PhoneType] = {}
-type_phone_dict: Dict[PhoneType, Phone] = {}
+word_phone_dict: Dict[str, StringPhone] = {}
+phone_type_dict: Dict[StringPhone, PhoneType] = {}
+type_phone_dict: Dict[PhoneType, StringPhone] = {}
 # type_voiced_phone_dict: Dict[] = defaultdict(lambda: defaultdict(set))
 
 

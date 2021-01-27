@@ -4,12 +4,12 @@ import os
 from collections import defaultdict
 from typing import Dict, List
 
-from Phyme.constants import Phone, PhoneType, VOWEL, AFFRICATE, FRICATIVE
+from Phyme.constants import StringPhone, PhoneType, VOWEL, AFFRICATE, FRICATIVE
 
 file_path = os.path.dirname(__file__)
 
 
-def load_word_phone_dict() -> Dict[str, List[Phone]]:
+def load_word_phone_dict() -> Dict[str, List[StringPhone]]:
     '''Load a dict of word -> phones mappings'''
     word_phone_dict = dict()
     with open(os.path.join(file_path, 'cmudict/cmudict-0.7b.txt'),
@@ -25,8 +25,8 @@ def load_word_phone_dict() -> Dict[str, List[Phone]]:
 
 def load_phone_type_dicts():
     '''Load both phone -> type and type -> phone mapped dicts'''
-    phone_type_dict: Dict[Phone, PhoneType] = dict()
-    type_phone_dict: Dict[PhoneType, Dict[Phone, Phone]] = defaultdict(dict)
+    phone_type_dict: Dict[StringPhone, PhoneType] = dict()
+    type_phone_dict: Dict[PhoneType, Dict[StringPhone, StringPhone]] = defaultdict(dict)
     with open(os.path.join(file_path, 'cmudict/cmudict-0.7b.phones.txt'),
               encoding='latin1') as f:
         for line in f:
@@ -49,7 +49,7 @@ def load_phone_type_dicts():
 def load_type_voiced_phone_dict():
     from Phyme.rhymeUtils import is_voiced
     _, type_phone_dict = load_phone_type_dicts()
-    type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Dict[Phone, Phone]]] = defaultdict(
+    type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Dict[StringPhone, StringPhone]]] = defaultdict(
         lambda: defaultdict(dict))
     for type_, phones in type_phone_dict.items():
         for phone in phones:

@@ -3,7 +3,7 @@ from .constants import PhymeResult
 from . import rhymeUtils as ru
 from .util import flatten
 from .IOUtil import load_word_phone_dict
-from .rhymeUtils import PermutedPhone, Permutation, Phone, permuted_phone_mapper
+from .rhymeUtils import PermutedPhone, Permutation, StringPhone, permuted_phone_mapper
 from .RhymeTrieNode import RhymeTrieNode
 from .songStats import sort_words
 from itertools import groupby
@@ -28,7 +28,7 @@ class Phyme(object):
         grouped_results = groupby(sorted_results, key=ru.count_syllables)
         return dict((k, list(v)) for k, v in grouped_results)
 
-    def sorted_search(self, phones: Iterable[Union[Phone, PermutedPhone]], keyword: str) -> PhymeResult:
+    def sorted_search(self, phones: Iterable[Union[StringPhone, PermutedPhone]], keyword: str) -> PhymeResult:
         results = self.search_permutations(phones)
         sorted_dict: PhymeResult = dict()
         for k, v in results.items():
@@ -131,7 +131,7 @@ class Phyme(object):
 
         return self.sorted_search(permuted_phones, word)
 
-    def get_by_vowel(self, vowel: Phone) -> PhymeResult:
+    def get_by_vowel(self, vowel: StringPhone) -> PhymeResult:
         if not vowel[-1].isnumeric():
             vowel = vowel + "1"
         phones = [PermutedPhone(vowel, Permutation.ADDITIVE)]

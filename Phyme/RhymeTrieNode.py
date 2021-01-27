@@ -1,16 +1,18 @@
 from typing import Dict, Iterable, List, Optional, Set, Union
+
+from .constants import StringPhone
 from .rhymeUtils import PermutedPhone, Permutation, Phone, CONSONANTS
 
 
 class RhymeTrieNode(object):
 
     def __init__(self, phone, parent):
-        self.children: Dict[Phone, RhymeTrieNode] = {}
+        self.children: Dict[StringPhone, RhymeTrieNode] = {}
         self.parent: Union[RhymeTrieNode] = parent
-        self.phone: Phone = phone
+        self.phone: StringPhone = phone
         self.words: Set[str] = set()
 
-    def insert(self, phones: List[Phone], word: str) -> 'RhymeTrieNode':
+    def insert(self, phones: List[StringPhone], word: str) -> 'RhymeTrieNode':
         '''Insert a list of phones into this node and its children. Returns the final node of the insert.'''
         if not phones:
             self.words.add(word.lower())
@@ -22,7 +24,7 @@ class RhymeTrieNode(object):
         remaining_phones = phones[1:]
         return child_node.insert(remaining_phones, word)
 
-    def contains(self, phones: List[Phone]) -> Union['RhymeTrieNode', bool]:
+    def contains(self, phones: List[StringPhone]) -> Union['RhymeTrieNode', bool]:
         '''Given a list of phones, finds the end node in the trie associated with those phones.
         Returns a RhymeTrieNode or False if there is no end node associated with the given phones'''
         if phones:
@@ -34,7 +36,7 @@ class RhymeTrieNode(object):
             return self
         return False
 
-    def search(self, phones: List[Phone]) -> Optional['RhymeTrieNode']:
+    def search(self, phones: List[StringPhone]) -> Optional['RhymeTrieNode']:
         '''Given a list of phones, find a node in the trie associated with those phones.
         Returns a RhymeTrieNode or None if there is no node associated with the given phones'''
         if not phones:
@@ -44,7 +46,7 @@ class RhymeTrieNode(object):
             return child_node.search(phones[1:])
         return None
 
-    def search_permutations(self, phones: List[Union[Phone, PermutedPhone]]) -> Iterable['RhymeTrieNode']:
+    def search_permutations(self, phones: List[Union[StringPhone, PermutedPhone]]) -> Iterable['RhymeTrieNode']:
         '''Returns a generator of nodes'''
         if not phones:
             yield self
@@ -57,7 +59,7 @@ class RhymeTrieNode(object):
             if child:
                 yield from child.search_permutations(remaining_phones)
 
-    def assemble(self) -> Iterable[Phone]:
+    def assemble(self) -> Iterable[StringPhone]:
         '''Aggregate all phones up the trie from this node, inclusive. Returns a generator'''
         if self.phone:
             yield self.phone
@@ -76,13 +78,13 @@ class RhymeTrieNode(object):
         for child in self.children.values():
             yield from child.get_sub_words()
 
-    def _get_permuted_phones(self, phone: Union[Phone, PermutedPhone]) -> Iterable[Phone]:
+    def _get_permuted_phones(self, phone: Union[StringPhone, PermutedPhone]) -> Iterable[StringPhone]:
         if isinstance(phone, PermutedPhone):
             yield from phone.permutation.apply(phone.phone)
         else:
             yield phone
 
-    def _add_subtract_phones(self, phones:List[Union[Phone, PermutedPhone]]) -> Iterable['RhymeTrieNode']:
+    def _add_subtract_phones(self, phones:List[Union[StringPhone, PermutedPhone]]) -> Iterable['RhymeTrieNode']:
         if isinstance(phones[0], PermutedPhone):
             phone = phones[0]
             # try all permutations without this phone
