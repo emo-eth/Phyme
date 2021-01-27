@@ -1,5 +1,5 @@
 from typing import Dict, Iterable, List, Optional, Set, Union
-from .rhymeUtils import (PermutedPhone, Permutation, Phone, CONSONANTS)
+from .rhymeUtils import PermutedPhone, Permutation, Phone, CONSONANTS
 
 
 class RhymeTrieNode(object):
