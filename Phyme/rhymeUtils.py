@@ -70,6 +70,7 @@ class Phone(object):
         self.family = _phone_type_dict.get(phone)
     
     def get_consonant_family_members(self) -> Optional[Set['Phone']]:
+        # necessary to return None? why not []? shouldn't get called anyway
         if self.is_vowel:
             return None
         assert self.family is not None
@@ -117,11 +118,19 @@ class Phone(object):
 Phone.VOWELS = frozenset(Phone(vowel) for vowel in VOWELS)
 Phone.CONSONANTS = frozenset(Phone(consonant) for consonant in CONSONANTS)
 
+class ShortVowel(Phone):
+    '''Eg leading w's and y's when they would otherwise add to syllable count'''
+
+    def __init__(self, phone: StringPhone):
+        super().__init__(phone)
+        self.is_vowel = False
+        self.is_consonant = False
+
 class MetaPhone(Phone):
     
-    def __init__(self, phone: StringPhone, *replacement_phones: StringPhone):
+    def __init__(self, phone: StringPhone, *replacement_phones: Phone):
         super().__init__(phone)
-        self.replacement_phones = frozenset([phone]).union(set(replacement_phones))
+        self.replacement_phones = frozenset([Phone(phone)]).union(set(replacement_phones))
         self.is_voiced = any(_is_voiced(phone) for phone in self.replacement_phones)
 
     def __str__(self):
@@ -143,7 +152,7 @@ class MetaPhone(Phone):
 
 class MetaVowel(MetaPhone):
     '''Useful for diphthongs and semivowels'''
-    def __init__(self, phone: StringPhone, *replacement_phones: StringPhone):
+    def __init__(self, phone: StringPhone, *replacement_phones: Phone):
         super().__init__(phone, *replacement_phones)
         self.is_vowel = True
         self.is_consonant = False
@@ -154,16 +163,42 @@ class MetaVowel(MetaPhone):
     def __hash__(self):
         return super().__hash__()
 
-ExtendsPhone = TypeVar("ExtendsPhone", bound=Phone)
+
+# class CompoundMetaPhone(MetaPhone):
+#     '''TODO: For replacing groups of phones with groups of phones?'''
+#     def __init__(self, phone: List[Phone], *replacement_phones: List[Phone]):
+#         super().__init__(phone, *replacement_phones)
+#         self.is_vowel = True
+#         self.is_consonant = False
+    
+#     def __repr__(self):
+#         return f'MetaPhone[Vowel:{self.is_vowel}, Voiced:{self.is_voiced}, Phones: {self.replacement_phones}>'
+
+#     def __hash__(self):
+#         return super().__hash__()
+
+# ExtendsPhone = TypeVar("ExtendsPhone", bound='Phone')
+# ExtendsMetaPhone = TypeVar("ExtendsMetaPhone", bound=MetaPhone)
 
 class PermutedPhone(object):
 
-    def __init__(self, phone: ExtendsPhone, permutation: 'Permutation'):
+    def __init__(self, phone: Phone, permutation: 'Permutation'):
         self.phone = phone
         self.permutation = permutation
 
     def __repr__(self):
         return f'PermutedPhone[Permutation:{self.permutation.name}, {repr(self.phone)}]'
+
+# TODO: test
+class PermutedMetaPhone(object):
+
+    def __init__(self, phone: Phone, permutation: 'Permutation'):
+        self.phone = phone
+        self.permutation = permutation
+
+    def __repr__(self):
+        return f'PermutedMetaPhone[Permutation:{self.permutation.name}, {repr(self.phone)}]'
+
 
 
 
@@ -265,7 +300,16 @@ def strip_leading_consonants(phones: List[Phone]) -> List[Phone]:
 
 
 def get_phones(word: str) -> List[Phone]:
-    return [Phone(phone) for phone in _word_phone_dict.get(word.upper(), [])]
+    return [phone_mapper(phone) for phone in _word_phone_dict.get(word.upper(), [])]
+
+
+def phone_mapper(phone: StringPhone) -> Phone:
+    if phone == 'Y':
+        # not MetaVowel because messes up syllable count?
+        return MetaPhone(phone, ShortVowel('IY0'))
+    elif phone == 'W':
+        return MetaPhone(phone, ShortVowel('UW0'))
+    return Phone(phone)
 
 
 # TODO: move this to IOUtil? But depends on is_voiced fn
@@ -301,7 +345,6 @@ class Permutation(Enum):
     CONSONANT = lambda _: Phone.VOWELS,
     SUBSTITUTION = lambda _: Phone.CONSONANTS,
 
-
 def permuted_phone_mapper(permutation: Permutation,
-                          test: Callable[[Phone], bool]) -> Callable[[ExtendsPhone], Union[Phone, PermutedPhone]]:
+                          test: Callable[[Phone], bool]) -> Callable[[Phone], Union[Phone, PermutedPhone]]:
     return lambda phone: PermutedPhone(phone, permutation) if test(phone) else phone

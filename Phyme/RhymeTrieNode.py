@@ -1,7 +1,7 @@
-from typing import Dict, Iterable, List, Optional, Set, Union
+from typing import Dict, Iterable, List, Optional, Sequence, Set, Type, Union
 
 from .constants import StringPhone
-from .rhymeUtils import PermutedPhone, Permutation, Phone
+from .rhymeUtils import MetaPhone, PermutedPhone, Permutation, Phone
 
 
 class RhymeTrieNode(object):
@@ -51,6 +51,7 @@ class RhymeTrieNode(object):
         if not phones:
             yield self
             return
+        yield from self._replace_phones(phones)
         yield from self._add_subtract_phones(phones)
         permuted_phones = self._get_permuted_phones(phones[0])
         remaining_phones = phones[1:]
@@ -89,7 +90,6 @@ class RhymeTrieNode(object):
         if isinstance(phones[0], PermutedPhone):
             phone = phones[0]
             # try all permutations without this phone
-            # TODO: wouldn't this skip a vowel?
             if phone.permutation == Permutation.SUBTRACTIVE:
                 yield from self.search_permutations(phones[1:])
             elif phone.permutation == Permutation.ADDITIVE:
@@ -98,3 +98,13 @@ class RhymeTrieNode(object):
                     child = self.children.get(consonant)
                     if child:
                         yield from child.search_permutations(phones)
+    
+    def _replace_phones(self, phones: List[Union[Phone, PermutedPhone]]) -> Iterable['RhymeTrieNode']:
+        first_phone = phones[0]
+        remaining_phones = phones[1:]
+        if isinstance(first_phone, MetaPhone):
+            for phone in first_phone.replacement_phones:
+                # TODO: MetaPermutedPhone?
+                new_phone: List[Union[Phone, PermutedPhone]] = [Phone(phone.phone)]
+                new_phones: List[Union[Phone, PermutedPhone]] = new_phone + remaining_phones
+                yield from self.search_permutations(new_phones)

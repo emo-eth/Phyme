@@ -27,7 +27,7 @@ class PhoneClasses(unittest.TestCase):
         dh = "DH"
         th_phone = ru.Phone(th)
         dh_phone = ru.Phone(dh)
-        meta = ru.MetaPhone(th, dh)
+        meta = ru.MetaPhone(th, dh_phone)
         self.assertEqual(meta, th)
         self.assertEqual(meta, dh)
         self.assertEqual(meta, th_phone)
@@ -38,7 +38,7 @@ class PhoneClasses(unittest.TestCase):
         ch = "CH"
         t_phone = ru.Phone(t)
         ch_phone = ru.Phone(ch)
-        meta = ru.MetaPhone(t, ch)
+        meta = ru.MetaPhone(t, ch_phone)
         self.assertEqual(meta, t)
         self.assertEqual(meta, ch)
         self.assertEqual(meta, t_phone)
@@ -51,8 +51,8 @@ class PhoneClasses(unittest.TestCase):
             i = "IY"
             y_phone = ru.Phone(y)
             i_phone = ru.Phone(i)
-            meta = ru.MetaVowel(y, i)
-            meta_copy = ru.MetaVowel(y, i)
+            meta = ru.MetaVowel(y, i_phone)
+            meta_copy = ru.MetaVowel(y, i_phone)
             self.assertEqual(meta_copy, meta)
             self.assertEqual(meta, y)
             self.assertEqual(meta, i)
@@ -66,7 +66,7 @@ class PhoneClasses(unittest.TestCase):
             u = "UW"
             w_phone = ru.Phone(w)
             u_phone = ru.Phone(u)
-            meta = ru.MetaVowel(w, u)
+            meta = ru.MetaVowel(w, u_phone)
             self.assertEqual(meta, w)
             self.assertEqual(meta, u)
             self.assertEqual(meta, u_phone)
@@ -84,7 +84,7 @@ class PhoneClasses(unittest.TestCase):
         self.assertTrue(phone1_copy in phone_set)
         self.assertTrue(phone2_copy in phone_set)
 
-        metaPhone = ru.MetaPhone("TH", "DH")
+        metaPhone = ru.MetaPhone("TH", ru.Phone("DH"))
         phone3 = ru.Phone("TH")
         phone_set2 = {phone3}
         self.assertTrue(metaPhone in phone_set2)

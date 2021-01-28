@@ -102,7 +102,6 @@ class Phyme(object):
         if not phones[0][-1].is_consonant:
             return dict()
         flattened_phones = flatten(phones)
-
         permuted_phones = map(permuted_phone_mapper(
             Permutation.PARTNER, lambda phone: phone.is_consonant), flattened_phones)
 

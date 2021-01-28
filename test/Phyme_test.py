@@ -44,6 +44,10 @@ class PhymeTest(unittest.TestCase):
     
     def test_sorted(self):
         self.assertEqual(self.rd.get_perfect_rhymes('say')[1][0], 'way')
+    
+    def test_meta(self):
+        results = self.rd.get_family_rhymes('ratatouille')
+        pass
 
 
 if __name__ == '__main__':
