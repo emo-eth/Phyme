@@ -38,6 +38,8 @@ class PhymeTest(unittest.TestCase):
     def test_multisyllable_rhymes(self):
         self.assertTrue('zoology' in flatten(self.rd.get_perfect_rhymes(
             'toxicology', num_syllables=3).values()))
+        self.assertFalse('zoology' in flatten(self.rd.get_perfect_rhymes(
+            'toxicology', num_syllables=4).values()))
 
     def test_substitution_rhymes(self):
         self.assertTrue('faster' in flatten(self.rd.get_substitution_rhymes('factor').values()))
@@ -46,8 +48,9 @@ class PhymeTest(unittest.TestCase):
         self.assertEqual(self.rd.get_perfect_rhymes('say')[1][0], 'way')
     
     def test_meta(self):
-        results = self.rd.get_family_rhymes('ratatouille')
-        pass
+        # MetaShortVowel
+        results = self.rd.get_perfect_rhymes('ratatouille')
+        self.assertTrue('huey' in flatten(results.values()))
 
 
 if __name__ == '__main__':
