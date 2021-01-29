@@ -31,7 +31,7 @@ CONSONANTS = frozenset(x for x in _phone_type_dict if _is_consonant(x))
 VOWELS = frozenset(x for x in _phone_type_dict if _is_vowel(x))
 
 
-def _is_voiced(phone):
+def _is_voiced(phone: StringPhone):
     '''Given a phone, determine if it is voiced
     Returns a boolean'''
     return phone in VOICED_CONSONANTS or _is_vowel(phone)
@@ -128,10 +128,10 @@ class ShortVowel(Phone):
 
 class MetaPhone(Phone):
     
-    def __init__(self, phone: StringPhone, *replacement_phones: Phone):
-        super().__init__(phone)
-        self.replacement_phones = frozenset([Phone(phone)]).union(set(replacement_phones))
-        self.is_voiced = any(_is_voiced(phone) for phone in self.replacement_phones)
+    def __init__(self, phone: Phone, *replacement_phones: Phone):
+        super().__init__(phone.phone)
+        self.replacement_phones = frozenset({phone, *replacement_phones})
+        self.is_voiced = any(phone.is_voiced for phone in self.replacement_phones)
 
     def __str__(self):
         return '"' + self.phone + '"'
@@ -141,9 +141,9 @@ class MetaPhone(Phone):
 
     def __eq__(self, other):
         if type(other) == StringPhone:
-            return other in self.replacement_phones
+            return Phone(other) in self.replacement_phones
         elif type(other) == Phone:
-            return other.phone in self.replacement_phones
+            return other in self.replacement_phones
         elif isinstance(other, MetaPhone):
             return len(self.replacement_phones.intersection(other.replacement_phones)) > 0
         
@@ -152,17 +152,28 @@ class MetaPhone(Phone):
 
 class MetaVowel(MetaPhone):
     '''Useful for diphthongs and semivowels'''
-    def __init__(self, phone: StringPhone, *replacement_phones: Phone):
+    def __init__(self, phone: Phone, *replacement_phones: Phone):
         super().__init__(phone, *replacement_phones)
         self.is_vowel = True
         self.is_consonant = False
     
     def __repr__(self):
-        return f'MetaPhone[Vowel:{self.is_vowel}, Voiced:{self.is_voiced}, Phones: {self.replacement_phones}>'
+        return f'MetaVowel[Vowel:{self.is_vowel}, Voiced:{self.is_voiced}, Phones: {self.replacement_phones}>'
 
     def __hash__(self):
         return super().__hash__()
 
+class MetaShortVowel(MetaPhone):
+    def __init__(self, phone: ShortVowel, *replacement_phones: ShortVowel):
+        super().__init__(phone, *replacement_phones)
+        self.is_vowel = False
+        self.is_consonant = False
+    
+    def __repr__(self):
+        return f'MetaShortVowel[Vowel:{self.is_vowel}, Voiced:{self.is_voiced}, Phones: {self.replacement_phones}>'
+
+    def __hash__(self):
+        return super().__hash__()
 
 # class CompoundMetaPhone(MetaPhone):
 #     '''TODO: For replacing groups of phones with groups of phones?'''
@@ -306,9 +317,9 @@ def get_phones(word: str) -> List[Phone]:
 def phone_mapper(phone: StringPhone) -> Phone:
     if phone == 'Y':
         # not MetaVowel because messes up syllable count?
-        return MetaPhone(phone, ShortVowel('IY0'))
+        return MetaShortVowel(ShortVowel(phone), ShortVowel('IY0'))
     elif phone == 'W':
-        return MetaPhone(phone, ShortVowel('UW0'))
+        return MetaShortVowel(ShortVowel(phone), ShortVowel('UW0'))
     return Phone(phone)
 
 
