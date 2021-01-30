@@ -2,24 +2,25 @@ import unittest
 import sys
 sys.path.append('../')
 from Phyme import rhymeUtils as ru
+from Phyme.rhymeUtils import RhymeUtils
 
 
 class PhoneClasses(unittest.TestCase):
 
     def testPhone(self):
-        vowel = next(ru.VOWELS.__iter__())
+        vowel = next(RhymeUtils.VOWELS.__iter__())
         vowel_phone = ru.Phone(vowel)
         print(vowel_phone.phone, vowel)
         self.assertEqual(vowel_phone, vowel)
         self.assertTrue(vowel_phone.is_vowel)
         self.assertFalse(vowel_phone.is_consonant)
         self.assertTrue(vowel_phone.is_voiced)
-        consonant = next(ru.CONSONANTS.__iter__())
+        consonant = next(RhymeUtils.CONSONANTS.__iter__())
         consonant_phone = ru.Phone(consonant)
         self.assertEqual(consonant_phone, consonant)
         self.assertTrue(consonant_phone.is_consonant)
         self.assertFalse(consonant_phone.is_vowel)
-        self.assertEqual(consonant_phone.is_voiced, ru._is_voiced(consonant))
+        self.assertEqual(consonant_phone.is_voiced, RhymeUtils._is_voiced(consonant))
     
     def testMetaPhone(self):
         # "the"

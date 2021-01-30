@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import Dict, List
 
 from Phyme.constants import StringPhone, PhoneType, VOWEL, AFFRICATE, FRICATIVE
-from Phyme.rhymeUtils import Phone, _is_voiced
+from Phyme.rhymeUtils import Phone
 
 
 file_path = os.path.dirname(__file__)
@@ -54,7 +54,7 @@ def load_type_voiced_phone_dict():
         lambda: defaultdict(dict))
     for type_, phones in type_phone_dict.items():
         for phone in phones:
-            if _is_voiced(phone):
+            if Phone._is_voiced(phone):
                 type_voiced_phone_dict[type_][True][phone] = phone
             else:
                 type_voiced_phone_dict[type_][False][phone] = phone

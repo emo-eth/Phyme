@@ -98,13 +98,15 @@ class RhymeTrieNode(object):
                     child = self.children.get(consonant)
                     if child:
                         yield from child.search_permutations(phones)
-    
+
     def _replace_phones(self, phones: List[Union[Phone, PermutedPhone]]) -> Iterable['RhymeTrieNode']:
         first_phone = phones[0]
         remaining_phones = phones[1:]
         if isinstance(first_phone, MetaPhone):
             for phone in first_phone.replacement_phones:
                 # TODO: MetaPermutedPhone?
-                new_phone: List[Union[Phone, PermutedPhone]] = [Phone(phone.phone)]
-                new_phones: List[Union[Phone, PermutedPhone]] = new_phone + remaining_phones
+                new_phone: List[Union[Phone, PermutedPhone]] = [
+                    Phone(phone.phone)]
+                new_phones: List[Union[Phone, PermutedPhone]
+                                 ] = new_phone + remaining_phones
                 yield from self.search_permutations(new_phones)
