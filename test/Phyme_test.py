@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append('../')
+# sys.path.append('../')
 from Phyme import Phyme
 from Phyme.util import flatten
 

@@ -249,3 +249,15 @@ def load_rhyme_trie() -> RhymeTrieNode:
     for word, phones in word_phone_dict.items():
         _rt.insert([Phone(phone) for phone in phones[::-1]], word)
     return _rt
+
+vowel_strings = set()
+for vowel_phone in Phone.VOWELS:
+    phone = vowel_phone.phone
+    if phone[-1].isnumeric():
+        vowel_strings.add(phone[:-1])
+
+ph = Phyme()
+for vowel in vowel_strings:
+    result = ph.get_by_vowel(vowel)
+    print(vowel, result.get(1)[:10])
+

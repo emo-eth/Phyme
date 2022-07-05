@@ -1,0 +1,50 @@
+IH ['hill', 'builds', 'sinks', 'minks', 'ins', 'drifts', 'creer', 'swing', 'ticks', 'wigs']
+AO ['cork', 'courts', 'tall', 'scorn', 'haw', 'norm', 'flawed', 'sought', 'pour', 'crawls']
+IY ["t's", 'fleet', "street's", 'beasts', 'least', 'gleams', 'gene', 'fiel', 'geek', 'east']
+OW ['"quote', 'sewed', 'show', 'folks', 'throats', 'spokes', 'gross', 'flowed', 'soles', 'dough']
+EY ["k's", 'baked', 'dames', 'fame', 'dazed', 'baile', 'wey', 'mates', 'bathed', 'lei']
+AH ['love', 'one', "son's", 'bugged', 'dust', 'run', 'funk', 'huff', 'hugged', 'puck']
+UH ['+plus', 'hook', 'booked', 'brook', 'stood', 'goode', 'lure', 'cooks', 'pulled', 'butch']
+AA ['.dot', 'hop', 'mock', 'darts', 'john', 'sonne', 'locked', 'slob', 'marc', 'arc']
+AY ["i'm", 'hyde', 'crime', 'spies', 'hive', 'piled', 'plies', 'sighed', 'hice', 'guys']
+OY ['.point', 'boy', 'coins', 'loin', 'moist', 'floyd', 'choice', 'noise', 'goin', 'join']
+UW ['pooh', 'queue', 'drool', 'muse', 'poo', 'koo', 'swoop', 'du', 'chewed', 'jews']
+AW ['crowned', 'vowed', 'lb', 'bound', 'spouse', 'drowns', 'scout', 'bow', 'bounced', 'mao']
+ER ["earth's", 'nerd', 'irv', 'murk', 'swirl', 'dirt', 'birds', 'purr', 'squirt', 'herbs']
+AE ['--dash', '-dash', '/slash', 'chan', 'shank', 'jab', 'masks', 'kat', 'wraps', 'clap']
+EH ['clair', 'gem', 'pairs', 'pare', 'tenth', 'hem', 'snare', 'realm', 'quel', 'dares']
+
+AY = AA + IY (i'm)s
+OY = OW + IY (point
+AO = "AW" (tall) (trad A)
+AH = "UH"
+ER = ER - closest ["UH"+"R"]
+UW - "OO"
+OW = "OH" trad O
+IY = I ("EE")
+UH = euh hook
+EH = these monsters just say "EH" instead of ER in practice, just EY + R
+AA = "AW" dot dawt
+AW = "AW"+"OO" = AO+UW (crowned, pound)
+IH = IH "hill" (swappable with IY) 
+EY = "AY" (trad E) (dames), approx EH   
+AE - AE/EAH (dash)
+
+diphthongs:
+AY [AA, IY]
+OY [OW, IY]
+AW [AW, UW]
+EY [EY, IY]
+
+swaps:
+AO = AH tall
+ER = AH earth
+OW = AH show (weak)
+AA = AH (weak)
+
+
+
+
+pure vowels = A: AA, E: EY, I: IY, O: OW, U: UW
+
+
