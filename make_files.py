@@ -12,12 +12,13 @@ file_path = os.path.dirname(__file__)
 
 
 def load_word_phone_dict() -> Dict[str, List[StringPhone]]:
-    '''Load a dict of word -> phones mappings'''
+    """Load a dict of word -> phones mappings"""
     word_phone_dict = dict()
-    with open(os.path.join(file_path, 'cmudict/cmudict-0.7b.txt'),
-              encoding='latin1') as f:
+    with open(
+        os.path.join(file_path, "cmudict/cmudict-0.7b.txt"), encoding="latin1"
+    ) as f:
         for line in f:
-            if line.startswith(';;;'):
+            if line.startswith(";;;"):
                 continue
             splits = line.split()
             word = splits[0]
@@ -26,11 +27,12 @@ def load_word_phone_dict() -> Dict[str, List[StringPhone]]:
 
 
 def load_phone_type_dicts():
-    '''Load both phone -> type and type -> phone mapped dicts'''
+    """Load both phone -> type and type -> phone mapped dicts"""
     phone_type_dict: Dict[StringPhone, PhoneType] = dict()
     type_phone_dict: Dict[PhoneType, Dict[StringPhone, StringPhone]] = defaultdict(dict)
-    with open(os.path.join(file_path, 'cmudict/cmudict-0.7b.phones.txt'),
-              encoding='latin1') as f:
+    with open(
+        os.path.join(file_path, "cmudict/cmudict-0.7b.phones.txt"), encoding="latin1"
+    ) as f:
         for line in f:
             phone, family = line.split()
             # at the expense of linguistic purity, group affricates and
@@ -50,8 +52,9 @@ def load_phone_type_dicts():
 
 def load_type_voiced_phone_dict():
     _, type_phone_dict = load_phone_type_dicts()
-    type_voiced_phone_dict: Dict[PhoneType, Dict[bool, Dict[StringPhone, StringPhone]]] = defaultdict(
-        lambda: defaultdict(dict))
+    type_voiced_phone_dict: Dict[
+        PhoneType, Dict[bool, Dict[StringPhone, StringPhone]]
+    ] = defaultdict(lambda: defaultdict(dict))
     for type_, phones in type_phone_dict.items():
         for phone in phones:
             if Phone._is_voiced(phone):
@@ -62,8 +65,9 @@ def load_type_voiced_phone_dict():
 
 
 def load_rhyme_trie():
-    '''Load a fully-loaded RhymeTrie object'''
+    """Load a fully-loaded RhymeTrie object"""
     from Phyme.RhymeTrieNode import RhymeTrieNode
+
     word_phone_dict = load_word_phone_dict()
     rt = RhymeTrieNode(None, None)
     for word, phones in word_phone_dict.items():
@@ -74,24 +78,24 @@ def load_rhyme_trie():
 
 def write_json():
     word_phone_dict = load_word_phone_dict()
-    with open('Phyme/data/word_phone.json', 'w') as f:
+    with open("Phyme/data/word_phone.json", "w") as f:
         json.dump(word_phone_dict, f)
     phone_type_dict, type_phone_dict = load_phone_type_dicts()
-    with open('Phyme/data/phone_type.json', 'w') as f:
+    with open("Phyme/data/phone_type.json", "w") as f:
         json.dump(phone_type_dict, f)
-    with open('Phyme/data/type_phone.json', 'w') as f:
+    with open("Phyme/data/type_phone.json", "w") as f:
         json.dump(type_phone_dict, f)
 
 
 def write_dependent_json():
     type_voiced_phone_dict = load_type_voiced_phone_dict()
-    with open('Phyme/data/type_voiced_phone.json', 'w') as f:
+    with open("Phyme/data/type_voiced_phone.json", "w") as f:
         json.dump(type_voiced_phone_dict, f)
 
 
 def write_pickle():
     rt = load_rhyme_trie()
-    with open('Phyme/data/RhymeTrie.pkl', 'wb') as f:
+    with open("Phyme/data/RhymeTrie.pkl", "wb") as f:
         pickle.dump(rt, f)
 
 
@@ -101,5 +105,5 @@ def main():
     write_pickle()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

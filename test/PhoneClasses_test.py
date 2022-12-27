@@ -1,12 +1,10 @@
 import unittest
-import sys
-sys.path.append('../')
+
 from Phyme import rhymeUtils as ru
 from Phyme.rhymeUtils import RhymeUtils
 
 
 class PhoneClasses(unittest.TestCase):
-
     def testPhone(self):
         vowel = next(RhymeUtils.VOWELS.__iter__())
         vowel_phone = ru.Phone(vowel)
@@ -21,7 +19,7 @@ class PhoneClasses(unittest.TestCase):
         self.assertTrue(consonant_phone.is_consonant)
         self.assertFalse(consonant_phone.is_vowel)
         self.assertEqual(consonant_phone.is_voiced, RhymeUtils._is_voiced(consonant))
-    
+
     def testMetaPhone(self):
         # "the"
         th = "TH"
@@ -47,35 +45,35 @@ class PhoneClasses(unittest.TestCase):
         self.assertFalse(meta.is_voiced)
 
     def testMetaVowel(self):
-            # y is i
-            y = "Y"
-            i = "IY"
-            y_phone = ru.Phone(y)
-            i_phone = ru.Phone(i)
-            meta = ru.MetaVowel(y_phone, i_phone)
-            meta_copy = ru.MetaVowel(y_phone, i_phone)
-            self.assertEqual(meta_copy, meta)
-            self.assertEqual(meta, y)
-            self.assertEqual(meta, i)
-            self.assertEqual(meta, y_phone)
-            self.assertEqual(meta, i_phone)
-            self.assertTrue(meta.is_voiced)
-            self.assertTrue(meta.is_vowel)
-            self.assertFalse(meta.is_consonant)
-            # w is u
-            w = "W"
-            u = "UW"
-            w_phone = ru.Phone(w)
-            u_phone = ru.Phone(u)
-            meta = ru.MetaVowel(w_phone, u_phone)
-            self.assertEqual(meta, w)
-            self.assertEqual(meta, u)
-            self.assertEqual(meta, u_phone)
-            self.assertEqual(meta, w_phone)
-            self.assertTrue(meta.is_voiced)
-            self.assertTrue(meta.is_vowel)
-            self.assertFalse(meta.is_consonant)
-        
+        # y is i
+        y = "Y"
+        i = "IY"
+        y_phone = ru.Phone(y)
+        i_phone = ru.Phone(i)
+        meta = ru.MetaVowel(y_phone, i_phone)
+        meta_copy = ru.MetaVowel(y_phone, i_phone)
+        self.assertEqual(meta_copy, meta)
+        self.assertEqual(meta, y)
+        self.assertEqual(meta, i)
+        self.assertEqual(meta, y_phone)
+        self.assertEqual(meta, i_phone)
+        self.assertTrue(meta.is_voiced)
+        self.assertTrue(meta.is_vowel)
+        self.assertFalse(meta.is_consonant)
+        # w is u
+        w = "W"
+        u = "UW"
+        w_phone = ru.Phone(w)
+        u_phone = ru.Phone(u)
+        meta = ru.MetaVowel(w_phone, u_phone)
+        self.assertEqual(meta, w)
+        self.assertEqual(meta, u)
+        self.assertEqual(meta, u_phone)
+        self.assertEqual(meta, w_phone)
+        self.assertTrue(meta.is_voiced)
+        self.assertTrue(meta.is_vowel)
+        self.assertFalse(meta.is_consonant)
+
     def testHash(self):
         phone1 = ru.Phone("IY")
         phone2 = ru.Phone("UW")
@@ -89,4 +87,3 @@ class PhoneClasses(unittest.TestCase):
         phone3 = ru.Phone("TH")
         phone_set2 = {phone3}
         self.assertTrue(metaPhone in phone_set2)
-
