@@ -14,6 +14,12 @@ ER ["earth's", 'nerd', 'irv', 'murk', 'swirl', 'dirt', 'birds', 'purr', 'squirt'
 AE ['--dash', '-dash', '/slash', 'chan', 'shank', 'jab', 'masks', 'kat', 'wraps', 'clap']
 EH ['clair', 'gem', 'pairs', 'pare', 'tenth', 'hem', 'snare', 'realm', 'quel', 'dares']
 
+not in california english:
+AO, EH
+
+AO - if word has 'a' - use Pure.A; if it has an 'o', use Pure.O
+
+
 AY = AA + IY (i'm)s
 OY = OW + IY (point
 AO = "AW" (tall) (trad A)
@@ -30,11 +36,53 @@ IH = IH "hill" (swappable with IY)
 EY = "AY" (trad E) (dames), approx EH   
 AE - AE/EAH (dash)
 
+
+# pure
+AA = Pure.A
+EY = Pure.E
+IY = Pure.I
+OW = Pure.O
+UW = Pure.U
+
 diphthongs:
-AY [AA, IY]
-OY [OW, IY]
-AW [AW, UW]
-EY [EY, IY]
+AY [AA, IY] [[Pure.A, Pure.I]]
+OY [OW, IY] [[Pure.O, Pure.I]]
+AW [AA, UW] [[Pure.A, Pure.U]]
+EY [EY, IY] [[Pure.E, Pure.I]]
+
+monothong to diphthong:
+OW [[Pure.O, Pure.U],[Pure.A,Pure.U]]
+EY [[Pure.E, Pure.I]]
+
+
+# replacements
+AO = [AA, AH]
+EH = [EH, Pure.E]
+AE = [AE, Pure.A]
+IH = [Pure.I, IH] "hill"
+AO = [Pure.A, Pure.O, AO] "or"
+UH = [Pure.O, IH?] - good/wolf
+AH = [Pure.A]
+
+
+IH = [Pure.I]
+AO = [Pure.A, Pure.O] (* depending on if word has A or O)
+IY = pure
+OW = [[Pure.O, Pure.U],[Pure.A,Pure.U]]
+EY = [[Pure.E, Pure.I]]
+AH = [Pure.A]
+UH = [Pure.A, Pure.O]
+AA = [Pure.A]
+AY = [[Pure.A, Pure.I]]
+OY = [[Pure.O, Pure.I], [Pure.A, Pure.I]]
+UW = [Pure.U]
+AW = [[Pure.A, Pure.U], [Pure.O, Pure.U]~]
+ER = [Pure.A?, IH?]
+AE = [Pure.E]
+EH = [Pure.E]
+
+
+
 
 swaps:
 AO = AH tall
