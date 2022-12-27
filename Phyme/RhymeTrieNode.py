@@ -1,4 +1,4 @@
-from typing import Dict, Iterable, List, Optional, Sequence, Set, Type, Union
+from typing import Dict, Iterable, List, Optional, Set, Union
 
 from Phyme.constants import StringPhone
 from Phyme.rhymeUtils import MetaPhone, PermutedPhone, Permutation, Phone

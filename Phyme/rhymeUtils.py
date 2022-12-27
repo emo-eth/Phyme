@@ -17,14 +17,11 @@ from typing import (
     List,
     Optional,
     Set,
-    Tuple,
-    Type,
-    TypeVar,
     Union,
 )
 
 
-class RhymeUtils(object):
+class RhymeUtils:
 
     CONSONANTS: FrozenSet[StringPhone]
     VOWELS: FrozenSet[StringPhone]
@@ -45,7 +42,7 @@ class RhymeUtils(object):
         return RhymeUtils._phone_type_dict.get(phone) == VOWEL
 
     @staticmethod
-    def _is_consonant(phone: StringPhone):
+    def _is_consonant(phone: StringPhone) -> bool:
         """
         Determine if a phone is a consonant
         Returns a boolean
@@ -53,18 +50,22 @@ class RhymeUtils(object):
         return not RhymeUtils._is_vowel(phone)
 
     @staticmethod
-    def get_consonant_family(consonant: StringPhone):
+    def get_consonant_family(consonant: StringPhone) -> Set[StringPhone]:
         """Given a consonant, get its family (type, voiced) members"""
         family = RhymeUtils._phone_type_dict.get(consonant)
-        return RhymeUtils._type_voiced_phone_dict[family][
-            RhymeUtils._is_voiced(consonant)
-        ]
+        if family:
+            return RhymeUtils._type_voiced_phone_dict[family][
+                RhymeUtils._is_voiced(consonant)
+            ]
+        return set()
 
     @staticmethod
-    def get_consonant_partners(consonant):
+    def get_consonant_partners(consonant) -> Set[StringPhone]:
         """Given a consonant, get its type members"""
         family = RhymeUtils._phone_type_dict.get(consonant)
-        return RhymeUtils._type_phone_dict.get(family)
+        if family:
+            return RhymeUtils._type_phone_dict.get(family, set())
+        return set()
 
     @staticmethod
     def _is_voiced(phone: StringPhone):
@@ -97,7 +98,7 @@ class UnknownPronunciationException(KeyError):
         super().__init__(self)
 
 
-class Phone(object):
+class Phone:
 
     VOWELS: FrozenSet["Phone"]
     CONSONANTS: FrozenSet["Phone"]
@@ -132,21 +133,21 @@ class Phone(object):
     # TODO: remove these?
 
     @staticmethod
-    def _is_vowel(phone: StringPhone):
+    def _is_vowel(phone: StringPhone) -> bool:
         return phone in RhymeUtils.VOWELS
 
     @staticmethod
-    def _is_consonant(phone: StringPhone):
+    def _is_consonant(phone: StringPhone) -> bool:
         return not RhymeUtils._is_vowel(phone)
 
     @staticmethod
-    def _is_voiced(phone: StringPhone):
+    def _is_voiced(phone: StringPhone) -> bool:
         return phone in VOICED_CONSONANTS or RhymeUtils._is_vowel(phone)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.phone
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Phone[Vowel:{self.is_vowel}, Voiced:{self.is_voiced}, Phone: {self.phone}]"
 
     def __eq__(self, other):
@@ -244,7 +245,7 @@ class MetaShortVowel(MetaPhone):
 # ExtendsMetaPhone = TypeVar("ExtendsMetaPhone", bound=MetaPhone)
 
 
-class PermutedPhone(object):
+class PermutedPhone:
     def __init__(self, phone: Phone, permutation: "Permutation"):
         self.phone = phone
         self.permutation = permutation
@@ -256,7 +257,7 @@ class PermutedPhone(object):
 # TODO: test
 
 
-class PermutedMetaPhone(object):
+class PermutedMetaPhone:
     def __init__(self, phone: Phone, permutation: "Permutation"):
         self.phone = phone
         self.permutation = permutation
@@ -289,7 +290,7 @@ class MetaConsonant(MetaPhone):
 Syllable = List[Phone]
 
 
-class PhoneUtils(object):
+class PhoneUtils:
     @staticmethod
     def is_stressed(syllable: Syllable) -> bool:
         """
@@ -304,7 +305,7 @@ class PhoneUtils(object):
         return vowel.phone[-1] in STRESSED_FLAGS
 
     @staticmethod
-    def get_last_stressed(syllables: List[Syllable]):
+    def get_last_stressed(syllables: List[Syllable]) -> List[Syllable]:
         """
         Gets the last stressed syllable of a list of phones, and any unstressed
         syllables following it.
@@ -340,7 +341,7 @@ class PhoneUtils(object):
         return syllables
 
     @staticmethod
-    def count_syllables(word: str):
+    def count_syllables(word: str) -> int:
         phones = PhoneUtils.get_phones(word)
         return len(PhoneUtils.extract_syllables(phones))
 
